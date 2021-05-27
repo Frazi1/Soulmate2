@@ -27,17 +27,7 @@ class ImagesBloc extends HydratedBloc<ImagesEvent, ImagesState> {
     if (event is FetchImages) {
       yield state.nextVersionWith(status: ImagesStatus.loading);
       yield await _mapPostFetchedToState(state);
-    } else if (event is ToggleImageLike) {
-      yield _mapToggleImageLikeToState(event, state);
     }
-  }
-
-  ImagesState _mapToggleImageLikeToState(ToggleImageLike event, ImagesState state) {
-    final image = state.images[event.imageIndex];
-
-    state.images[event.imageIndex] = image.copyWith(liked: !image.liked);
-
-    return state.nextVersionWith();
   }
 
   Future<ImagesState> _mapPostFetchedToState(ImagesState state) async {
@@ -73,7 +63,7 @@ class ImagesBloc extends HydratedBloc<ImagesEvent, ImagesState> {
         status: ImagesStatus.success,
         version: json['version'] as int,
         images: (json['images'] as List)
-            .map((jsonImg) => ImageModel(jsonImg['id'] as int, jsonImg['url'] as String, jsonImg['liked'] as bool))
+            .map((jsonImg) => ImageModel(jsonImg['id'] as int, jsonImg['url'] as String))
             .toList());
     return result;
   }
@@ -83,7 +73,7 @@ class ImagesBloc extends HydratedBloc<ImagesEvent, ImagesState> {
     if (state.status != ImagesStatus.success) return null;
     var result = {
       'version': state.version,
-      'images': state.images.map((img) => {'id': img.id, 'liked': img.liked, 'url': img.url}).toList(),
+      'images': state.images.map((img) => {'id': img.id, 'url': img.url}).toList(),
     };
     return result;
   }

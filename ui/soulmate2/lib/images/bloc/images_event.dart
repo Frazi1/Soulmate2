@@ -7,12 +7,3 @@ abstract class ImagesEvent extends Equatable {
 }
 
 class FetchImages extends ImagesEvent {}
-
-class ToggleImageLike extends ImagesEvent {
-  final int imageIndex;
-
-  ToggleImageLike(this.imageIndex);
-
-  @override
-  List<Object> get props => [imageIndex];
-}

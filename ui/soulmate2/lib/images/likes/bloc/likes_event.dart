@@ -6,9 +6,10 @@ abstract class LikesEvent extends Equatable {
 }
 
 class ToggleLikeEvent extends LikesEvent {
+  final String imageUrl;
   final bool liked;
 
-  ToggleLikeEvent(this.liked);
+  ToggleLikeEvent(this.imageUrl, this.liked);
 
   @override
   List<Object> get props => [liked];

@@ -8,14 +8,9 @@ import 'package:equatable/equatable.dart';
 class ImageModel extends Equatable {
   final int id;
   final String url;
-  final bool liked;
 
-  ImageModel(this.id, this.url, this.liked);
-
-  ImageModel copyWith({required bool liked}) {
-    return ImageModel(id, url, liked);
-  }
+  ImageModel(this.id, this.url);
 
   @override
-  List<Object> get props => [id, url, liked];
+  List<Object> get props => [id, url];
 }

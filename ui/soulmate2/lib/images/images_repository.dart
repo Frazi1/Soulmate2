@@ -15,7 +15,7 @@ class ImagesRepository {
     if (response.statusCode == 200) {
       final body = json.decode(response.body) as List;
       return body.map((dynamic json) {
-        return ImageModel(json['id'] as int, json['url'] as String, false);
+        return ImageModel(json['id'] as int, json['url'] as String);
       }).toList();
     }
     throw Exception('error fetching images: ${response.statusCode}');
