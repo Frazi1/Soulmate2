@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "/Users/dmitry-vychikov/.dotnet/store/|arch|/|tfm|",
+      "/Users/dmitry-vychikov/.nuget/packages"
+    ]
+  }
+}

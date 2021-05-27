@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "O/6AenxkqtWJTbtFAxCsnP4oA9GT9BHbkeICOQIrRKxxZdo0krw7BQZzjhgWvlAi6OAtIvc+G25NiRNmD1fYOQ==",
+  "success": true,
+  "projectFilePath": "/Users/dmitry-vychikov/Projects/Soulmate2/Soulmate2-Server/Soulmate2-Server.csproj",
+  "expectedPackageFiles": [
+    "/Users/dmitry-vychikov/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/Users/dmitry-vychikov/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/dmitry-vychikov/.nuget/packages/swashbuckle.aspnetcore/5.6.3/swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "/Users/dmitry-vychikov/.nuget/packages/swashbuckle.aspnetcore.swagger/5.6.3/swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "/Users/dmitry-vychikov/.nuget/packages/swashbuckle.aspnetcore.swaggergen/5.6.3/swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "/Users/dmitry-vychikov/.nuget/packages/swashbuckle.aspnetcore.swaggerui/5.6.3/swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}
