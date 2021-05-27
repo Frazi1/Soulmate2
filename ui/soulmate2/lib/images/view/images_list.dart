@@ -24,24 +24,31 @@ class _ImagesListState extends State<ImagesList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ImagesBloc, ImagesState>(
-      buildWhen: (previous, current) =>
-          current.images.length > previous.images.length || current.status != previous.status,
-      builder: (context, state) {
-        if (state.status == ImagesStatus.initial) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    return BlocConsumer<ImagesBloc, ImagesState>(
+        buildWhen: (previous, current) =>
+            current.images.length > previous.images.length || current.status != previous.status,
+        builder: (context, state) {
+          if (state.status == ImagesStatus.initial) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        if (state.images.isEmpty) {
-          return const Center(child: Text('no images'));
-        }
-        return ListView.builder(
-          itemBuilder: (context, index) => index >= state.images.length ? BottomLoader() : ImageListItem(index: index),
-          itemCount: state.hasReachedMax ? state.images.length : state.images.length + 1,
-          controller: _scrollController,
-        );
-      },
-    );
+          if (state.images.isEmpty) {
+            return const Center(child: Text('no images'));
+          }
+          return ListView.builder(
+            itemBuilder: (context, index) =>
+                index >= state.images.length ? BottomLoader() : ImageListItem(index: index),
+            itemCount: state.hasReachedMax ? state.images.length : state.images.length + 1,
+            controller: _scrollController,
+          );
+        },
+        listenWhen: (previous, current) =>
+            previous.status == ImagesStatus.loading && current.status == ImagesStatus.failure,
+        listener: (context, state) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text("Could not load images")));
+        });
   }
 
   @override

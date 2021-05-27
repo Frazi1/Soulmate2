@@ -1,7 +1,9 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:soulmate2/images/likes/bloc/likes_bloc.dart';
 import 'package:soulmate2/images/view/images_page.dart';
+import 'package:soulmate2/splash/main_page.dart';
 import 'package:user_repository/user_repository.dart';
 
 import 'authentication/bloc/authentication_bloc.dart';
@@ -23,11 +25,15 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: authenticationRepository,
-      child: BlocProvider(
-        create: (_) => AuthenticationBloc(
-          authenticationRepository: authenticationRepository,
-          userRepository: userRepository,
-        ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => LikesBloc()),
+          BlocProvider(
+              create: (_) => AuthenticationBloc(
+                    authenticationRepository: authenticationRepository,
+                    userRepository: userRepository,
+                  ))
+        ],
         child: AppView(),
       ),
     );
@@ -54,7 +60,7 @@ class _AppViewState extends State<AppView> {
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
-            _navigator.pushAndRemoveUntil(ImagesPage.route(), (route) => false);
+            _navigator.pushAndRemoveUntil(MainPage.route(), (route) => false);
             return;
             switch (state.status) {
               case AuthenticationStatus.authenticated:

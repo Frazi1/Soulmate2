@@ -13,8 +13,9 @@ part 'images_state.dart';
 
 class ImagesBloc extends HydratedBloc<ImagesEvent, ImagesState> {
   final ImagesRepository _imagesRepository;
+  final bool _persistCache;
 
-  ImagesBloc(this._imagesRepository) : super(const ImagesState());
+  ImagesBloc(this._imagesRepository, this._persistCache) : super(const ImagesState());
 
   @override
   Stream<Transition<ImagesEvent, ImagesState>> transformEvents(
@@ -57,24 +58,31 @@ class ImagesBloc extends HydratedBloc<ImagesEvent, ImagesState> {
 
   @override
   ImagesState? fromJson(Map<String, dynamic> json) {
+    if(!_persistCache) return null;
     if (json == null) return null;
 
     var result = ImagesState(
         status: ImagesStatus.success,
         version: json['version'] as int,
         images: (json['images'] as List)
-            .map((jsonImg) => ImageModel(jsonImg['id'] as int, jsonImg['url'] as String))
+            .map((jsonImg) => ImageModel(jsonImg['url'] as String))
             .toList());
     return result;
   }
 
   @override
   Map<String, dynamic>? toJson(ImagesState state) {
+    if(!_persistCache) return null;
     if (state.status != ImagesStatus.success) return null;
     var result = {
       'version': state.version,
-      'images': state.images.map((img) => {'id': img.id, 'url': img.url}).toList(),
+      'images': state.images.map((img) => {'url': img.url}).toList(),
     };
     return result;
+  }
+
+  @override
+  Future<void> close() {
+    return _imagesRepository.close();
   }
 }
