@@ -1,86 +1,49 @@
-import 'package:authentication_repository/authentication_repository.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:soulmate2/login/vk/auth/vk_auth_page.dart';
-import 'package:user_repository/user_repository.dart';
-import 'app.dart';
+import 'package:soulmate2/images/likes/view/favorites_page.dart';
+import 'package:soulmate2/soulmate_drawer.dart';
+import 'auth/firebase/firebase_auth_bloc.dart';
+import 'auth/vk/auth/bloc/vk_auth_bloc.dart';
+import 'favorites/favorites_page.dart';
+import 'images/likes/bloc/likes_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
   );
-
-  runApp(App(
-    authenticationRepository: AuthenticationRepository(),
-    userRepository: UserRepository(),
-  ));
+  await Firebase.initializeApp();
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(create: (_) => LikesBloc()),
+    BlocProvider(create: (_) => VkAuthBloc()),
+    BlocProvider(create: (_) => FirebaseAuthBloc())
+  ], child: App()));
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
+  final _fbApp = Firebase.initializeApp();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Soulmate',
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 40,
-                  fontWeight: FontWeight.w500),
-            ),
-            Container(
-                padding: EdgeInsets.all(10),
-                child: TextField(
-                    decoration: InputDecoration(
-                        labelText: 'Username', border: OutlineInputBorder()))),
-            Container(
-                padding: EdgeInsets.all(10),
-                child: TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                    ))),
-            Container(
-                padding: EdgeInsets.all(10),
-                child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Login')
-                )
-            )
-          ],
-        ),
-      )
+      navigatorKey: GlobalKey<NavigatorState>(),
+      home: FutureBuilder(
+          future: _fbApp,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error loading Firebase:${snapshot.error}');
+            } else if (snapshot.hasData) {
+              return FavoritesPage();
+            } else {
+              return CircularProgressIndicator();
+            }
+          }),
     );
   }
 }

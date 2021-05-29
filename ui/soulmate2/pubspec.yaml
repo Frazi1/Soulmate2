@@ -37,10 +37,8 @@ dependencies:
   path_provider: ^2.0.2
   cached_network_image: any
   webview_flutter: any
-  authentication_repository:
-    path: packages/authentication_repository
-  user_repository:
-    path: packages/user_repository
+  firebase_core: any
+  firebase_auth: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

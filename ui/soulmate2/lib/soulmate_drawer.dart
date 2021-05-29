@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:soulmate2/auth/firebase/auth_page.dart';
 import 'package:soulmate2/images/likes/view/favorites_page.dart';
 import 'package:soulmate2/images/view/images_page.dart';
 
-import 'login/vk/vk_page.dart';
+import 'auth/vk/vk_page.dart';
+import 'favorites/favorites_page.dart';
 
 class SoulmateDrawer extends StatelessWidget {
   @override
@@ -20,10 +22,17 @@ class SoulmateDrawer extends StatelessWidget {
                 const Text('Favorites'),
               ],
             ),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(FavoritesPage.route());
+            },
           ),
           ListTile(
             title: const Text('VK'),
-            onTap: () => Navigator.of(context).push(VkPage.route()),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(VkPage.route());
+            },
           )
         ],
       ),
@@ -44,7 +53,7 @@ class MainPage extends StatelessWidget {
           ),
           drawer: SoulmateDrawer(),
           body: TabBarView(
-            children: [ImagesPage(), FavoritesPage()],
+            children: [ImagesPage(), FavoritesList()],
           ),
         ));
   }

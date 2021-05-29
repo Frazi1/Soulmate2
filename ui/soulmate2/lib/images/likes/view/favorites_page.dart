@@ -10,8 +10,7 @@ class FavoritesImagesBloc extends ImagesBloc {
   FavoritesImagesBloc(FavoriteImagesRepository imagesRepository) : super(imagesRepository, false);
 }
 
-class FavoritesPage extends StatelessWidget {
-  static Route route() => MaterialPageRoute<void>(builder: (_) => FavoritesPage());
+class FavoritesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
