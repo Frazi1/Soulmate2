@@ -17,7 +17,7 @@ class LoginForm extends StatelessWidget {
               ..hideCurrentSnackBar()
               ..showSnackBar(SnackBar(content: Text('Authentication Failure:${state.error}')));
           } else if (state.status.isSubmissionSuccess) {
-            Navigator.of(context).pushAndRemoveUntil(AuthPage.route(), (route) => false);
+            Navigator.of(context).pop();
           }
         }),
       ],

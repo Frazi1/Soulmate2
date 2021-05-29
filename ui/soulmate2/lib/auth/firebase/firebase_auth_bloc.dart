@@ -17,6 +17,8 @@ class FirebaseAuthBloc extends Bloc<FirebaseAuthEvent, FirebaseAuthState> {
   Stream<FirebaseAuthState> mapEventToState(FirebaseAuthEvent event) async* {
     if (event is UserLoggedInFirebaseAuthEvent) {
       yield FirebaseAuthCompleted(event.user);
+    } else if(event is UserLoggedOutFirebaseEvent){
+      yield FirebaseAuthInitial();
     }
   }
 }

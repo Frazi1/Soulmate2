@@ -10,46 +10,59 @@ class AuthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(
-      child: BlocBuilder<FirebaseAuthBloc, FirebaseAuthState>(
-        builder: (context, state) {
-          if (state is FirebaseAuthInitial) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'You are not logged in.',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Text('Please sign in to enable synchronization with your cloud account'),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      child: const Text('Sign In'),
-                      onPressed: () => Navigator.of(context).push(LoginPage.route()),
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: BlocBuilder<FirebaseAuthBloc, FirebaseAuthState>(
+            builder: (context, state) {
+              if (state is FirebaseAuthInitial) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'You are not logged in.',
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ),
-                const Text("Don't have an account?"),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      child: const Text('Sign Up'),
-                      onPressed: () => Navigator.of(context).push(SignUpPage.route()),
+                    const Text('Please sign in to enable synchronization with your cloud account'),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        child: const Text('Sign In'),
+                        onPressed: () => Navigator.of(context).push(LoginPage.route()),
+                      ),
                     ),
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(12)),
-              ],
-            );
-          }
-          return Text('Logged in as');
-        },
+                    const Text("Don't have an account?"),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        child: const Text('Sign Up'),
+                        onPressed: () => Navigator.of(context).push(SignUpPage.route()),
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              final user = (state as FirebaseAuthCompleted).user;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Logged in as ${user.email}'),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      child: Text('Logout'),
+                      onPressed: () => context.read<FirebaseAuthBloc>().add(UserLoggedOutFirebaseEvent()),
+                    ),
+                  )
+                ],
+              );
+            },
+          ),
+        ),
       ),
-    ));
+    );
   }
 }

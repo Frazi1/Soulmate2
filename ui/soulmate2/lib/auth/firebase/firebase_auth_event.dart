@@ -13,3 +13,7 @@ class UserLoggedInFirebaseAuthEvent extends FirebaseAuthEvent{
   UserLoggedInFirebaseAuthEvent(this.user);
 }
 
+class UserLoggedOutFirebaseEvent extends FirebaseAuthEvent {
+
+}
+
