@@ -36,6 +36,7 @@ dependencies:
   hydrated_bloc: any
   path_provider: ^2.0.2
   cached_network_image: any
+  webview_flutter: any
   authentication_repository:
     path: packages/authentication_repository
   user_repository:

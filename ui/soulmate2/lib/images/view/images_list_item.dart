@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:soulmate2/images/bloc/images_bloc.dart';
 import 'package:soulmate2/images/likes/bloc/likes_bloc.dart';
 
-class ImageListItem extends StatelessWidget {
+
+class ImageListItem<TImagesBloc extends ImagesBloc> extends StatelessWidget {
   final int index;
 
   const ImageListItem({
@@ -14,7 +15,7 @@ class ImageListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ImagesBloc, ImagesState>(
+    return BlocBuilder<TImagesBloc, ImagesState>(
       builder: (context, state) {
         final currentImage = state.images[index];
         return Stack(

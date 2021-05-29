@@ -2,13 +2,13 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:soulmate2/images/likes/bloc/likes_bloc.dart';
-import 'package:soulmate2/images/view/images_page.dart';
-import 'package:soulmate2/splash/main_page.dart';
+import 'package:soulmate2/login/vk/auth/bloc/vk_auth_bloc.dart';
+import 'package:soulmate2/login/vk/vk_page.dart';
+import 'package:soulmate2/soulmate_drawer.dart';
 import 'package:user_repository/user_repository.dart';
 
 import 'authentication/bloc/authentication_bloc.dart';
 import 'splash/view/splash_page.dart';
-import 'home/view/home_page.dart';
 import 'login/view/login_page.dart';
 
 class App extends StatelessWidget {
@@ -32,7 +32,8 @@ class App extends StatelessWidget {
               create: (_) => AuthenticationBloc(
                     authenticationRepository: authenticationRepository,
                     userRepository: userRepository,
-                  ))
+                  )),
+          BlocProvider(create: (_) => VkAuthBloc())
         ],
         child: AppView(),
       ),
@@ -58,22 +59,24 @@ class _AppViewState extends State<AppView> {
       ),
       navigatorKey: _navigatorKey,
       builder: (context, child) {
-        return BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {
-            _navigator.pushAndRemoveUntil(MainPage.route(), (route) => false);
-            return;
-            switch (state.status) {
-              case AuthenticationStatus.authenticated:
+        return MultiBlocListener(
+          listeners: [
+            BlocListener<AuthenticationBloc, AuthenticationState>(listener: (context, state) {
+              _navigator.pushAndRemoveUntil(MainPage.route(), (route) => false);
+              return;
+              switch (state.status) {
+                case AuthenticationStatus.authenticated:
                 // _navigator.pushAndRemoveUntil<void>(HomePage.route(), (route) => false);
-                break;
-              case AuthenticationStatus.unauthenticated:
-                _navigator.pushAndRemoveUntil<void>(LoginPage.route(), (route) => false);
-                break;
-              default:
-                break;
-            }
-          },
-          child: child,
+                  break;
+                case AuthenticationStatus.unauthenticated:
+                  _navigator.pushAndRemoveUntil<void>(LoginPage.route(), (route) => false);
+                  break;
+                default:
+                  break;
+              }
+            })
+          ],
+          child: child!,
         );
       },
       onGenerateRoute: (_) => SplashPage.route(),
