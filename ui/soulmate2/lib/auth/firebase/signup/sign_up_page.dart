@@ -15,14 +15,14 @@ class SignUpPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
-        child: BlocListener<FirebaseAuthBloc, FirebaseAuthState>(
-          listener: (context, state) {
-            if (state is UserLoggedInFirebaseAuthEvent) {
-              Navigator.of(context).pop();
-            }
-          },
-          child: BlocProvider(
-            create: (context) => SignUpBloc(context.read<FirebaseAuthBloc>()),
+        child: BlocProvider(
+          create: (context) => SignUpBloc(context.read<FirebaseAuthBloc>()),
+          child: BlocListener<SignUpBloc, SignUpState>(
+            listener: (context, state) {
+              if (state is UserLoggedInFirebaseAuthEvent) {
+                Navigator.of(context).pop();
+              }
+            },
             child: SignUpView(),
           ),
         ),
