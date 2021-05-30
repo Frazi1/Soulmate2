@@ -29,13 +29,14 @@ class ImageListItem<TImagesBloc extends ImagesBloc> extends StatelessWidget {
             Positioned(
                 bottom: 30,
                 right: 50,
-                child: BlocBuilder<LikesBloc, LikesState>(
+                child: BlocBuilder<LikesBloc, FavoritesState>(
                   builder: (context, state) {
-                    var liked =
-                        state.likedUrls.containsKey(currentImage.url) && state.likedUrls[currentImage.url] == true;
+                    var liked = state is FavoritesLoadedState && state.favorites.isFavorite(currentImage);
                     return GestureDetector(
                       child: Icon(Icons.favorite, color: liked ? Colors.red : Colors.grey),
-                      onTap: () => context.read<LikesBloc>().add(ToggleLikeEvent(currentImage.url, !liked)),
+                      onTap: () {
+                        context.read<LikesBloc>().add(ToggleFavoriteEvent(currentImage, !liked));
+                      },
                     );
                   },
                 )),

@@ -1,26 +1,45 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:soulmate2/images/likes/view/favorites_page.dart';
-import 'package:soulmate2/soulmate_drawer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:soulmate2/images/likes/favorites_repository.dart';
 import 'auth/firebase/firebase_auth_bloc.dart';
 import 'auth/vk/auth/bloc/vk_auth_bloc.dart';
 import 'favorites/favorites_page.dart';
 import 'images/likes/bloc/likes_bloc.dart';
+
+const USE_FIREBASE_EMULATOR = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
   );
+
   await Firebase.initializeApp();
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (_) => LikesBloc()),
-    BlocProvider(create: (_) => VkAuthBloc()),
-    BlocProvider(create: (_) => FirebaseAuthBloc())
-  ], child: App()));
+  FirebaseDatabase database;
+  if (USE_FIREBASE_EMULATOR) {
+    await FirebaseAuth.instance.useEmulator('http://localhost:9099');
+    database = FirebaseDatabase(databaseURL: 'http://10.0.2.2:9000');
+  } else{
+    database = FirebaseDatabase();
+  }
+  database.setPersistenceEnabled(true);
+
+  runApp(RepositoryProvider(
+    create: (context) => FavoritesRepository(database),
+    child: MultiBlocProvider(providers: [
+      BlocProvider(create: (context) {
+        final x = RepositoryProvider.of<FavoritesRepository>(context);
+        return LikesBloc(x)..add(LoadFavoritesEvent());
+      }),
+      BlocProvider(create: (_) => VkAuthBloc()),
+      BlocProvider(create: (_) => FirebaseAuthBloc())
+    ], child: App()),
+  ));
 }
 
 class App extends StatelessWidget {

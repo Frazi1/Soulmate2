@@ -11,7 +11,7 @@ part 'images_event.dart';
 
 part 'images_state.dart';
 
-class ImagesBloc extends HydratedBloc<ImagesEvent, ImagesState> {
+class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
   final ImagesRepository _imagesRepository;
   final bool _persistCache;
 
@@ -56,33 +56,34 @@ class ImagesBloc extends HydratedBloc<ImagesEvent, ImagesState> {
     }
   }
 
-  @override
-  ImagesState? fromJson(Map<String, dynamic> json) {
-    if(!_persistCache) return null;
-    if (json == null) return null;
+  // @override
+  // ImagesState? fromJson(Map<String, dynamic> json) {
+  //   if(!_persistCache) return null;
+  //   if (json == null) return null;
+  //
+  //   var result = ImagesState(
+  //       status: ImagesStatus.success,
+  //       version: json['version'] as int,
+  //       images: (json['images'] as List)
+  //           .map((jsonImg) => ImageModel(jsonImg['url'] as String))
+  //           .toList());
+  //   return result;
+  // }
 
-    var result = ImagesState(
-        status: ImagesStatus.success,
-        version: json['version'] as int,
-        images: (json['images'] as List)
-            .map((jsonImg) => ImageModel(jsonImg['url'] as String))
-            .toList());
-    return result;
-  }
+  // @override
+  // Map<String, dynamic>? toJson(ImagesState state) {
+  //   if(!_persistCache) return null;
+  //   if (state.status != ImagesStatus.success) return null;
+  //   var result = {
+  //     'version': state.version,
+  //     'images': state.images.map((img) => {'url': img.url}).toList(),
+  //   };
+  //   return result;
+  // }
 
   @override
-  Map<String, dynamic>? toJson(ImagesState state) {
-    if(!_persistCache) return null;
-    if (state.status != ImagesStatus.success) return null;
-    var result = {
-      'version': state.version,
-      'images': state.images.map((img) => {'url': img.url}).toList(),
-    };
-    return result;
-  }
-
-  @override
-  Future<void> close() {
-    return _imagesRepository.close();
+  Future<void> close() async {
+    await _imagesRepository.close();
+    return super.close();
   }
 }

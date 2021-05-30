@@ -9,9 +9,7 @@ part 'firebase_auth_event.dart';
 part 'firebase_auth_state.dart';
 
 class FirebaseAuthBloc extends Bloc<FirebaseAuthEvent, FirebaseAuthState> {
-  FirebaseAuthBloc() : super(FirebaseAuthInitial()) {
-    FirebaseAuth.instance.useEmulator('https://10.0.2.2:9099');
-  }
+  FirebaseAuthBloc() : super(FirebaseAuthInitial());
 
   @override
   Stream<FirebaseAuthState> mapEventToState(FirebaseAuthEvent event) async* {

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 import '../../../soulmate_logo.dart';
-import '../../auth_page.dart';
 import '../login_bloc.dart';
 
 class LoginForm extends StatelessWidget {

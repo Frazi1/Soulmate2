@@ -18,7 +18,10 @@ class FavoritesList extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => FavoritesImagesBloc(FavoriteImagesRepository(context.read<LikesBloc>()))..add(FetchImages()))
+              create: (context) {
+                context.read<LikesBloc>().add(LoadFavoritesEvent());
+                return FavoritesImagesBloc(FavoriteImagesRepository(context.read<LikesBloc>()))..add(FetchImages());
+              })
         ],
         child: CustomImagesList<FavoritesImagesBloc>(
           fetchImages: (bloc) => bloc.add(FetchImages()),

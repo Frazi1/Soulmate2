@@ -7,9 +7,11 @@ import 'package:equatable/equatable.dart';
 // "thumbnailUrl": "https://via.placeholder.com/150/92c952"
 class ImageModel extends Equatable {
   final String url;
+  final String sourceType;
+  final String id;
 
-  ImageModel(this.url);
+  ImageModel({required this.id, required this.sourceType, required this.url});
 
   @override
-  List<Object> get props => [url];
+  List<Object> get props => [url, sourceType, id];
 }

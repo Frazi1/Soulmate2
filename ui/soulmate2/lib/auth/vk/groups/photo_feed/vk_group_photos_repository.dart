@@ -24,20 +24,18 @@ class VkGroupImagesRepository extends ImagesRepository {
         .toList();
 
     var flatten = [];
-    postAttachments.forEach((element) {flatten.addAll(element); });
+    postAttachments.forEach((element) {
+      flatten.addAll(element);
+    });
     var photoAtthachments = flatten
         .where((element) => element['type'] == 'photo')
         .map((e) => e['photo']).toList();
 
-    var allSizes = photoAtthachments
-        .map((photo) => photo['sizes'] as List)
+    return photoAtthachments.map((e) =>
+        ImageModel(
+            id: (e['id'] as int).toString(),
+            sourceType: 'vk',
+            url: ((e['sizes'] as List).last as Map)['url'] as String))
         .toList();
-    var lastLizes = allSizes.map((sizes) => sizes.last).toList();
-
-    var biggestPhotos = lastLizes
-        .map((size) => ImageModel(size['url'] as String))
-        .toList();
-
-    return biggestPhotos.toList();
   }
 }
