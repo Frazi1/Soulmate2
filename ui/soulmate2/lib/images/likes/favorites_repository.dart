@@ -81,22 +81,20 @@ class FavoritesRepository {
 
   Future<void> addFavorite(ImageModel image) async {
     return await _favorites!
-        .child('${image.sourceType}_${image.id}')
+        .child(createImageKey(image))
         .set(
           {'url': image.url, 'source_type': image.sourceType, 'id': image.id},
-          priority: DateTime.now().toUtc().millisecondsSinceEpoch,
+          priority: -DateTime.now().toUtc().millisecondsSinceEpoch,
         )
         .timeout(_operationTimeout, onTimeout: () => print('$_operationTimeout timeout expired when saving favorite'))
         .catchError((e) => print("Error saving favorite:$e"));
   }
 
-  Future<void> removeFavorite(ImageModel image) async {
-    return await _favorites!.child(image.sourceType).child(image.id).remove().timeout(_operationTimeout,
-        onTimeout: () => print('$_operationTimeout timeout expired when removing favorite'));
-  }
+  String createImageKey(ImageModel image) => '${image.sourceType}_${image.id}';
 
-  Future<bool> isFavorite(ImageModel image) async {
-    return await _favorites!.child(image.sourceType).child(image.id).once().then((snapshot) => snapshot.value != null);
+  Future<void> removeFavorite(ImageModel image) async {
+    return await _favorites!.child(createImageKey(image)).remove().timeout(_operationTimeout,
+        onTimeout: () => print('$_operationTimeout timeout expired when removing favorite'));
   }
 
   Future<void> loadFavorites() async {
@@ -105,10 +103,6 @@ class FavoritesRepository {
         .once()
         .timeout(_operationTimeout)
         .then((value) => _cache = FavoritesCache(_buildImageModelsFromStorageModel(value)))
-        .then((value) {
-          _clearListeners();
-          _createListeners();
-        })
         .then((value) => _controller.add(_cache!))
         .catchError((e) => print('Error loading favorites: $e'));
   }
@@ -156,6 +150,8 @@ class FavoritesRepository {
 
     _isOnlineMode = user != null;
     _favorites = _database.reference().child(favoritesPath);
+    _clearListeners();
+    _createListeners();
     _favorites!.keepSynced(true);
   }
 }
