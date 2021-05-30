@@ -13,8 +13,9 @@ abstract class ImagesRepository {
 }
 
 class FavoriteImagesRepository extends ImagesRepository {
-  FavoritesCache? _favorites;
   late final StreamSubscription favoritesUpdatesSub;
+
+  List<ImageModel>? _favorites;
 
   FavoriteImagesRepository(LikesBloc likesBloc) {
     updateFavorites(likesBloc.state);
@@ -25,14 +26,14 @@ class FavoriteImagesRepository extends ImagesRepository {
 
   void updateFavorites(FavoritesState state) {
     if(state is FavoritesLoadedState){
-      _favorites = state.favorites;
+      _favorites = state.favorites.images.toList();
     }
   }
 
   @override
   Future<List<ImageModel>> fetchImages([int startIndex = 0, int limit = 5]) {
     var result = _favorites
-        ?.images
+        ?.reversed
         .skip(startIndex)
         .take(limit)
         .toList()
