@@ -25,6 +25,7 @@ class FirebaseAuthBloc extends Bloc<FirebaseAuthEvent, FirebaseAuthState> {
     if (event is UserLoggedInFirebaseAuthEvent) {
       try {
         if (event.firstLogIn) {
+          await FirebaseDatabase.instance.setPersistenceEnabled(true);
           await _favoritesRepository.transferDataToUser(event.user.uid);
         }
       } catch (e) {
@@ -38,6 +39,7 @@ class FirebaseAuthBloc extends Bloc<FirebaseAuthEvent, FirebaseAuthState> {
     } else if (event is UserLoggedOutFirebaseEvent) {
       FirebaseDatabase.instance.goOffline();
       await FirebaseAuth.instance.signOut();
+      FirebaseDatabase.instance.setPersistenceEnabled(true);
       yield FirebaseAuthInitial();
       _favoritesRepository.setFavorites();
     }
