@@ -22,14 +22,15 @@ class FavoritesCache {
 
 class FavoritesRepository {
   static const String LOCAL_FAVORITES = 'local-favorites';
-
   static String _createUserFavorites(String uid) => 'user-favorites-$uid';
 
   final FirebaseDatabase _database;
 
+  bool _isOnlineMode = false;
   DatabaseReference? _favorites;
-
   FavoritesCache? _cache;
+
+  Duration get _operationTimeout => _isOnlineMode ? Duration(seconds: 3) : Duration(milliseconds: 30);
 
   final StreamController<FavoritesCache> _controller = StreamController();
   final List<StreamSubscription> _listeners = [];
@@ -72,12 +73,16 @@ class FavoritesRepository {
         .child(image.sourceType)
         .child(image.id)
         .set({'url': image.url})
-        .timeout(Duration(seconds: 1))
+        .timeout(_operationTimeout ,onTimeout: () => print('$_operationTimeout timeout expired when saving favorite'))
         .catchError((e) => print("Error saving favorite:$e"));
   }
 
   Future<void> removeFavorite(ImageModel image) async {
-    return await _favorites!.child(image.sourceType).child(image.id).remove();
+    return await _favorites!
+        .child(image.sourceType)
+        .child(image.id)
+        .remove()
+        .timeout(_operationTimeout, onTimeout: () => print('$_operationTimeout timeout expired when removing favorite'));
   }
 
   Future<bool> isFavorite(ImageModel image) async {
@@ -87,7 +92,7 @@ class FavoritesRepository {
   Future<void> loadFavorites() async {
     return await _favorites!
         .once()
-        // .timeout(Duration(seconds: 2))
+        .timeout(_operationTimeout)
         .then((value) => _cache = FavoritesCache(_buildImageModelsFromStorageModel(value)))
         .then((value) => _createListeners('vk'))
         .then((value) => _controller.add(_cache!))
@@ -108,17 +113,19 @@ class FavoritesRepository {
   }
 
   Future<void> transferDataToUser(String uid) async {
-    var currentData = await _favorites!.once().timeout(Duration(seconds: 2));
+    final currentData = await _favorites!.once().timeout(Duration(seconds: 2));
 
-    var newFavorites = _database.reference().child(_createUserFavorites(uid));
+    final newFavorites = _database.reference().child(_createUserFavorites(uid));
     await newFavorites.set(currentData);
     await _favorites!.remove();
     newFavorites.keepSynced(true);
   }
 
   void setFavorites()  {
-    var user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
     final favoritesPath = user == null ? LOCAL_FAVORITES : _createUserFavorites(user.uid);
+
+    _isOnlineMode = user != null;
     _favorites = _database.reference().child(favoritesPath);
     _favorites!.keepSynced(true);
   }
