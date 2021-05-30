@@ -23,3 +23,12 @@ class FavoritesLoadedState extends FavoritesState {
     return FavoritesLoadedState(favorites: favorites, version: this.version + 1);
   }
 }
+
+class FavoriteDeletingState extends FavoritesState {
+  final ImageModel image;
+
+  FavoriteDeletingState(this.image);
+
+  @override
+  List<Object> get props => [image];
+}

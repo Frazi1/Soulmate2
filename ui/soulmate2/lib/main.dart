@@ -9,6 +9,7 @@ import 'package:soulmate2/images/likes/favorites_repository.dart';
 import 'auth/firebase/firebase_auth_bloc.dart';
 import 'auth/vk/auth/bloc/vk_auth_bloc.dart';
 import 'favorites/favorites_page.dart';
+import 'favorites/upload/favorites_upload_cubit.dart';
 import 'images/likes/bloc/likes_bloc.dart';
 
 const USE_FIREBASE_EMULATOR = false;
@@ -40,7 +41,8 @@ void main() async {
         return LikesBloc(RepositoryProvider.of<FavoritesRepository>(context))..add(LoadFavoritesEvent());
       }),
       BlocProvider(create: (_) => VkAuthBloc()),
-      BlocProvider(create: (context) => FirebaseAuthBloc(RepositoryProvider.of<FavoritesRepository>(context)))
+      BlocProvider(create: (context) => FirebaseAuthBloc(RepositoryProvider.of<FavoritesRepository>(context))),
+      BlocProvider(create: (context) => FavoritesUploadCubit(context.read<LikesBloc>()))
     ], child: App()),
   ));
 }

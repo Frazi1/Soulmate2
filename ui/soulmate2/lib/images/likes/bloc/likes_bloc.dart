@@ -31,6 +31,12 @@ class LikesBloc extends Bloc<FavoritesEvent, FavoritesState> {
     print('Likes bloc: error $error');
   }
 
+
+  @override
+  void onChange(Change<FavoritesState> change) {
+    print('Likes bloc: changed to state ${change.nextState}');
+  }
+
   @override
   Stream<FavoritesState> mapEventToState(FavoritesEvent event) async* {
     print('Processing event: $event');
@@ -44,6 +50,7 @@ class LikesBloc extends Bloc<FavoritesEvent, FavoritesState> {
           print(e);
         }
       } else {
+        yield FavoriteDeletingState(event.image);
         await _repository.removeFavorite(event.image);
       }
     } else if (event is FavoritesUpdatedEvent) {

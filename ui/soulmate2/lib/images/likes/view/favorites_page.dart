@@ -41,7 +41,6 @@ class FavoritesList extends StatelessWidget {
             return FavoritesImagesBloc(FavoriteImagesRepository(likesBloc), likesBloc)
               ..add(FetchImages());
           }),
-          BlocProvider(create: (context) => FavoritesUploadCubit(context.read<LikesBloc>()))
         ],
         child: CustomImagesList<FavoritesImagesBloc>(
           fetchImages: (bloc) => bloc.add(FetchImages()),
