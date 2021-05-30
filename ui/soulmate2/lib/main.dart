@@ -29,15 +29,18 @@ void main() async {
   }
   database.setPersistenceEnabled(true);
 
+  if (FirebaseAuth.instance.currentUser == null) {
+    await database.goOffline();
+  }
+
   runApp(RepositoryProvider(
     create: (context) => FavoritesRepository(database),
     child: MultiBlocProvider(providers: [
       BlocProvider(create: (context) {
-        final x = RepositoryProvider.of<FavoritesRepository>(context);
-        return LikesBloc(x)..add(LoadFavoritesEvent());
+        return LikesBloc(RepositoryProvider.of<FavoritesRepository>(context))..add(LoadFavoritesEvent());
       }),
       BlocProvider(create: (_) => VkAuthBloc()),
-      BlocProvider(create: (_) => FirebaseAuthBloc())
+      BlocProvider(create: (context) => FirebaseAuthBloc(RepositoryProvider.of<FavoritesRepository>(context)))
     ], child: App()),
   ));
 }

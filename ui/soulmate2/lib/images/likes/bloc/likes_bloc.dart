@@ -21,7 +21,19 @@ class LikesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   }
 
   @override
+  void onEvent(FavoritesEvent event) {
+    print('Likes_bloc: got event: ${event}');
+  }
+
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    print('Likes bloc: error $error');
+  }
+
+  @override
   Stream<FavoritesState> mapEventToState(FavoritesEvent event) async* {
+    print('Processing event: $event');
     if (event is LoadFavoritesEvent) {
       await _repository.loadFavorites();
     } else if (event is ToggleFavoriteEvent) {

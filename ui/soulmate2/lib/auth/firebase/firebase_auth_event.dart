@@ -9,8 +9,9 @@ abstract class FirebaseAuthEvent extends Equatable {
 
 class UserLoggedInFirebaseAuthEvent extends FirebaseAuthEvent{
   final User user;
+  final bool firstLogIn;
 
-  UserLoggedInFirebaseAuthEvent(this.user);
+  UserLoggedInFirebaseAuthEvent(this.user, {required this.firstLogIn});
 }
 
 class UserLoggedOutFirebaseEvent extends FirebaseAuthEvent {

@@ -26,7 +26,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       try {
         final result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: event.username, password: event.password);
-        _firebaseAuthBloc.add(UserLoggedInFirebaseAuthEvent(result.user!));
+        _firebaseAuthBloc.add(UserLoggedInFirebaseAuthEvent(result.user!, firstLogIn: true));
         yield state.copyWith(status: FormzStatus.submissionSuccess);
       } catch (e) {
         yield state.copyWith(status: FormzStatus.submissionFailure, error: e.toString());

@@ -35,7 +35,8 @@ class ImageListItem<TImagesBloc extends ImagesBloc> extends StatelessWidget {
                     return GestureDetector(
                       child: Icon(Icons.favorite, color: liked ? Colors.red : Colors.grey),
                       onTap: () {
-                        context.read<LikesBloc>().add(ToggleFavoriteEvent(currentImage, !liked));
+                        var bloc = context.read<LikesBloc>();
+                        bloc.add(ToggleFavoriteEvent(currentImage, !liked));
                       },
                     );
                   },

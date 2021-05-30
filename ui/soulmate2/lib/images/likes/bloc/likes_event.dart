@@ -6,7 +6,6 @@ abstract class FavoritesEvent extends Equatable {
 }
 
 class LoadFavoritesEvent extends FavoritesEvent {
-
 }
 
 class ToggleFavoriteEvent extends FavoritesEvent {

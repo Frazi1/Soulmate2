@@ -48,7 +48,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield state.copyWith(status: FormzStatus.submissionInProgress);
       try {
         final result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: state.username.value, password: state.password.value);
-        _firebaseAuthBloc.add(UserLoggedInFirebaseAuthEvent(result.user!));
+        _firebaseAuthBloc.add(UserLoggedInFirebaseAuthEvent(result.user!, firstLogIn: true));
         yield state.copyWith(status: FormzStatus.submissionSuccess);
       } on Exception catch (e) {
         yield state.copyWith(status: FormzStatus.submissionFailure, error: e.toString());
