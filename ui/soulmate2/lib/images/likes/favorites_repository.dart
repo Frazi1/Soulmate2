@@ -34,48 +34,58 @@ class FavoritesRepository {
   Duration get _operationTimeout => _isOnlineMode ? Duration(seconds: 3) : Duration(milliseconds: 30);
 
   final StreamController<FavoritesCache> _controller = StreamController();
-  final Map<String,List<StreamSubscription>> _listeners = {};
+  final Map<String, List<StreamSubscription>> _listeners = {};
 
   FavoritesRepository(this._database) {
     setFavorites();
   }
 
-  void _clearListeners(){
-    _listeners.forEach((key, value) => value.forEach((x)=>x.cancel()));
+  void _clearListeners() {
+    _listeners.forEach((key, value) => value.forEach((x) => x.cancel()));
     _listeners.clear();
   }
 
-  void _createListeners(String sourceType) {
-    final addListener = _favorites!.child(sourceType).onChildAdded.listen((event) {
+  void _createListeners() {
+    final addListener = _favorites!.onChildAdded.listen((event) {
+      final value = event.snapshot.value;
       final image = ImageModel(
-          id: event.snapshot.key as String, sourceType: sourceType, url: event.snapshot.value['url'] as String);
-      print('$sourceType favorite added: ${image.url}');
+        id: value['id'] as String,
+        sourceType: value['source_type'] as String,
+        url: value['url'] as String,
+      );
+      print('${image.sourceType} favorite added: ${image.url}');
       if (_cache != null) {
         _cache!.add(image);
         _controller.add(_cache!);
       }
     });
 
-    final removeListener = _favorites!.child(sourceType).onChildRemoved.listen((event) {
+    final removeListener = _favorites!.onChildRemoved.listen((event) {
+      final value = event.snapshot.value;
       final image = ImageModel(
-          id: event.snapshot.key as String, sourceType: sourceType, url: event.snapshot.value['url'] as String);
-      print('$sourceType favorite url removed: ${image.url}');
+        id: value['id'] as String,
+        sourceType: value['source_type'] as String,
+        url: value['url'] as String,
+      );
+      print('${image.sourceType} favorite url removed: ${image.url}');
       if (_cache != null) {
         _cache!.remove(image);
         _controller.add(_cache!);
       }
     });
 
-    _listeners[sourceType] =[addListener, removeListener];
+    _listeners[""] = [addListener, removeListener];
   }
 
   Stream<FavoritesCache> get favorites => _controller.stream;
 
   Future<void> addFavorite(ImageModel image) async {
     return await _favorites!
-        .child(image.sourceType)
-        .child(image.id)
-        .set({'url': image.url},priority: DateTime.now().toUtc().millisecondsSinceEpoch)
+        .child('${image.sourceType}_${image.id}')
+        .set(
+          {'url': image.url, 'source_type': image.sourceType, 'id': image.id},
+          priority: DateTime.now().toUtc().millisecondsSinceEpoch,
+        )
         .timeout(_operationTimeout, onTimeout: () => print('$_operationTimeout timeout expired when saving favorite'))
         .catchError((e) => print("Error saving favorite:$e"));
   }
@@ -97,8 +107,7 @@ class FavoritesRepository {
         .then((value) => _cache = FavoritesCache(_buildImageModelsFromStorageModel(value)))
         .then((value) {
           _clearListeners();
-          _createListeners('vk');
-          _createListeners('custom');
+          _createListeners();
         })
         .then((value) => _controller.add(_cache!))
         .catchError((e) => print('Error loading favorites: $e'));
@@ -107,12 +116,13 @@ class FavoritesRepository {
   Set<ImageModel> _buildImageModelsFromStorageModel(DataSnapshot value) {
     final images = Set<ImageModel>();
     if (value.value == null) return images;
-    var sourceTypes = value.value as Map;
-    sourceTypes.forEach((sourceType, value) {
-      var imageIds = sourceTypes[sourceType] as Map;
-      imageIds.forEach((id, value) {
-        images.add(ImageModel(id: id as String, sourceType: sourceType as String, url: value['url'] as String));
-      });
+    var collection = value.value as Map;
+    collection.forEach((key, image) {
+      images.add(ImageModel(
+        id: image['id'] as String,
+        sourceType: image['source_type'] as String,
+        url: image['url'] as String,
+      ));
     });
     return images;
   }
