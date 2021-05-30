@@ -13,9 +13,8 @@ part 'images_state.dart';
 
 class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
   final ImagesRepository _imagesRepository;
-  final bool _persistCache;
 
-  ImagesBloc(this._imagesRepository, this._persistCache) : super(const ImagesState());
+  ImagesBloc(this._imagesRepository) : super(const ImagesState());
 
   @override
   Stream<Transition<ImagesEvent, ImagesState>> transformEvents(

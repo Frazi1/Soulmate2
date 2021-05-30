@@ -10,5 +10,5 @@ part 'vk_group_photos_feed_state.dart';
 
 class VkGroupPhotosFeedBloc extends ImagesBloc {
   final String groupName;
-  VkGroupPhotosFeedBloc(this.groupName, ImagesRepository repository) : super(repository, false);
+  VkGroupPhotosFeedBloc(this.groupName, ImagesRepository repository) : super(repository);
 }
