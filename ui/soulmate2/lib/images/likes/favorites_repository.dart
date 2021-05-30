@@ -34,16 +34,18 @@ class FavoritesRepository {
   Duration get _operationTimeout => _isOnlineMode ? Duration(seconds: 3) : Duration(milliseconds: 30);
 
   final StreamController<FavoritesCache> _controller = StreamController();
-  final List<StreamSubscription> _listeners = [];
+  final Map<String,List<StreamSubscription>> _listeners = {};
 
   FavoritesRepository(this._database) {
     setFavorites();
   }
 
-  void _createListeners(String sourceType) {
-    _listeners.forEach((x) => x.cancel());
+  void _clearListeners(){
+    _listeners.forEach((key, value) => value.forEach((x)=>x.cancel()));
     _listeners.clear();
+  }
 
+  void _createListeners(String sourceType) {
     final addListener = _favorites!.child(sourceType).onChildAdded.listen((event) {
       final image = ImageModel(
           id: event.snapshot.key as String, sourceType: sourceType, url: event.snapshot.value['url'] as String);
@@ -64,7 +66,7 @@ class FavoritesRepository {
       }
     });
 
-    _listeners.addAll([addListener, removeListener]);
+    _listeners[sourceType] =[addListener, removeListener];
   }
 
   Stream<FavoritesCache> get favorites => _controller.stream;
@@ -73,7 +75,7 @@ class FavoritesRepository {
     return await _favorites!
         .child(image.sourceType)
         .child(image.id)
-        .set({'url': image.url})
+        .set({'url': image.url},priority: DateTime.now().toUtc().millisecondsSinceEpoch)
         .timeout(_operationTimeout, onTimeout: () => print('$_operationTimeout timeout expired when saving favorite'))
         .catchError((e) => print("Error saving favorite:$e"));
   }
@@ -89,10 +91,15 @@ class FavoritesRepository {
 
   Future<void> loadFavorites() async {
     return await _favorites!
+        .orderByPriority()
         .once()
         .timeout(_operationTimeout)
         .then((value) => _cache = FavoritesCache(_buildImageModelsFromStorageModel(value)))
-        .then((value) => _createListeners('vk'))
+        .then((value) {
+          _clearListeners();
+          _createListeners('vk');
+          _createListeners('custom');
+        })
         .then((value) => _controller.add(_cache!))
         .catchError((e) => print('Error loading favorites: $e'));
   }

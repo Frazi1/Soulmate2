@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:soulmate2/auth/firebase/firebase_auth_bloc.dart';
+import 'package:soulmate2/favorites/upload/favorites_upload_cubit.dart';
 import 'package:soulmate2/images/bloc/images_bloc.dart';
 import 'package:soulmate2/images/images_repository.dart';
 import 'package:soulmate2/images/likes/bloc/likes_bloc.dart';
@@ -35,14 +38,33 @@ class FavoritesList extends StatelessWidget {
           BlocProvider(create: (context) {
             var likesBloc = context.read<LikesBloc>();
             likesBloc.add(LoadFavoritesEvent());
-            return FavoritesImagesBloc(FavoriteImagesRepository(likesBloc), likesBloc)..add(FetchImages());
-          })
+            return FavoritesImagesBloc(FavoriteImagesRepository(likesBloc), likesBloc)
+              ..add(FetchImages());
+          }),
+          BlocProvider(create: (context) => FavoritesUploadCubit(context.read<LikesBloc>()))
         ],
         child: CustomImagesList<FavoritesImagesBloc>(
           fetchImages: (bloc) => bloc.add(FetchImages()),
           getItems: (state) => state.images,
-          builder: (context, index) => ImageListItem<FavoritesImagesBloc>(
-            index: index,
+          builder: (context, index) => ImageListItem<FavoritesImagesBloc>(index: index),
+          header: Align(
+            alignment: Alignment.topRight,
+            child: BlocBuilder<FirebaseAuthBloc, FirebaseAuthState>(
+              builder: (context, state) {
+                if(state is! FirebaseAuthCompleted) {
+                  return Row();
+                }
+                return IconButton(
+                  icon: Icon(Icons.add_a_photo),
+                  onPressed: () async {
+                    final file = await ImagePicker().getImage(source: ImageSource.gallery);
+                    if (file != null) {
+                      context.read<FavoritesUploadCubit>().uploadImage(file.path);
+                    }
+                  },
+                );
+              },
+            ),
           ),
           getErrorMessage: (state) => null,
         ),

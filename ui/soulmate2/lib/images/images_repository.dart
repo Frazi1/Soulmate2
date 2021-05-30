@@ -33,8 +33,7 @@ class FavoriteImagesRepository extends ImagesRepository {
   @override
   Future<List<ImageModel>> fetchImages([int startIndex = 0, int limit = 5]) {
     var result = _favorites
-        ?.reversed
-        .skip(startIndex)
+        ?.skip(startIndex)
         .take(limit)
         .toList()
     ?? [];

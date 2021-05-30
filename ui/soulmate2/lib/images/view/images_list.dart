@@ -8,21 +8,28 @@ import 'bottom_loader.dart';
 
 class CustomImagesList<TBloc extends ImagesBloc> extends StatefulWidget {
   final IndexedWidgetBuilder builder;
+  final Widget? header;
   final List Function(ImagesState state) getItems;
   final String? Function(ImagesState state) getErrorMessage;
   final void Function(TBloc bloc) fetchImages;
 
-  CustomImagesList(
-      {required this.builder, required this.getItems, required this.getErrorMessage, required this.fetchImages});
+  CustomImagesList({
+    required this.builder,
+    this.header,
+    required this.getItems,
+    required this.getErrorMessage,
+    required this.fetchImages,
+  });
 
   @override
   _CustomImagesListState createState() {
-    return _CustomImagesListState<TBloc>(builder, getItems, getErrorMessage, fetchImages);
+    return _CustomImagesListState<TBloc>(builder, header, getItems, getErrorMessage, fetchImages);
   }
 }
 
 class _CustomImagesListState<TBloc extends ImagesBloc> extends State<CustomImagesList> {
   final IndexedWidgetBuilder builder;
+  final Widget? header;
   final List Function(ImagesState state) getItems;
   final String? Function(ImagesState state) getErrorMessage;
   final void Function(TBloc) fetchImages;
@@ -30,7 +37,7 @@ class _CustomImagesListState<TBloc extends ImagesBloc> extends State<CustomImage
   final _scrollController = ScrollController();
   late final TBloc _bloc;
 
-  _CustomImagesListState(this.builder, this.getItems, this.getErrorMessage, this.fetchImages);
+  _CustomImagesListState(this.builder, this.header, this.getItems, this.getErrorMessage, this.fetchImages);
 
   @override
   void initState() {
@@ -56,9 +63,22 @@ class _CustomImagesListState<TBloc extends ImagesBloc> extends State<CustomImage
       body: BlocConsumer<TBloc, ImagesState>(
         builder: (context, state) {
           var items = getItems(state);
-          if (items.length == 0) {
-            return Center(child: Text("No items"));
-          }
+          // if (items.length == 0) {
+          //   return Center(child: Text("No items"));
+          // }
+
+          return CustomScrollView(controller: _scrollController, slivers: [
+            SliverAppBar(
+              floating: true,
+              title: header != null ? header : null,
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return builder(context, index);
+              },
+              childCount: items.length),
+            )
+          ]);
 
           return ListView.builder(
             itemBuilder: builder,
@@ -67,7 +87,7 @@ class _CustomImagesListState<TBloc extends ImagesBloc> extends State<CustomImage
           );
         },
         listener: (context, state) {
-          if(state.status == ImagesStatus.failure) {
+          if (state.status == ImagesStatus.failure) {
             var error = getErrorMessage(state);
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
