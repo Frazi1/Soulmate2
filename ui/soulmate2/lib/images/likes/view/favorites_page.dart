@@ -42,31 +42,60 @@ class FavoritesList extends StatelessWidget {
               ..add(FetchImages());
           }),
         ],
-        child: CustomImagesList<FavoritesImagesBloc>(
-          fetchImages: (bloc) => bloc.add(FetchImages()),
-          getItems: (state) => state.images,
-          builder: (context, index) => ImageListItem<FavoritesImagesBloc>(index: index),
-          header: Align(
-            alignment: Alignment.topRight,
-            child: BlocBuilder<FirebaseAuthBloc, FirebaseAuthState>(
-              builder: (context, state) {
-                if(state is! FirebaseAuthCompleted) {
-                  return Row();
-                }
-                return IconButton(
-                  icon: Icon(Icons.add_a_photo),
-                  onPressed: () async {
-                    final file = await ImagePicker().getImage(source: ImageSource.gallery);
-                    if (file != null) {
-                      context.read<FavoritesUploadCubit>().uploadImage(file.path);
-                    }
-                  },
-                );
-              },
-            ),
-          ),
-          getErrorMessage: (state) => null,
+        child: BlocConsumer<FavoritesImagesBloc, ImagesState>(
+          builder: (context, state) {
+            var items = state.images;
+            // if (items.length == 0) {
+            //   return Center(child: Text("No items"));
+            // }
+
+            return CustomScrollView( slivers: [
+              SliverAppBar(
+                floating: true,
+                // title: Text('test'),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return ImageListItem<FavoritesImagesBloc>(index: index,);
+                },
+                    childCount: items.length),
+              )
+            ]);
+
+          },
+          listener: (context, state) {
+            if (state.status == ImagesStatus.failure) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text("Could not load")));
+            }
+          },
         ),
+        // child: CustomImagesList<FavoritesImagesBloc>(
+        //   fetchImages: (bloc) => bloc.add(FetchImages()),
+        //   getItems: (state) => state.images,
+        //   builder: (context, index) => ImageListItem<FavoritesImagesBloc>(index: index),
+        //   header: Align(
+        //     alignment: Alignment.topRight,
+        //     child: BlocBuilder<FirebaseAuthBloc, FirebaseAuthState>(
+        //       builder: (context, state) {
+        //         if(state is! FirebaseAuthCompleted) {
+        //           return Row();
+        //         }
+        //         return IconButton(
+        //           icon: Icon(Icons.add_a_photo),
+        //           onPressed: () async {
+        //             final file = await ImagePicker().getImage(source: ImageSource.gallery);
+        //             if (file != null) {
+        //               context.read<FavoritesUploadCubit>().uploadImage(file.path);
+        //             }
+        //           },
+        //         );
+        //       },
+        //     ),
+        //   ),
+        //   getErrorMessage: (state) => null,
+        // ),
       ),
     );
   }

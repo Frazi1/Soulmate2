@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'likes/favorites_repository.dart';
 
 abstract class ImagesRepository {
-  Future<List<ImageModel>> fetchImages([int startIndex = 0, int limit = 5]);
+  Future<List<ImageModel>> fetchImages([int startIndex = 0, int limit = 100]);
   Future<void> close();
 }
 
@@ -31,7 +31,7 @@ class FavoriteImagesRepository extends ImagesRepository {
   }
 
   @override
-  Future<List<ImageModel>> fetchImages([int startIndex = 0, int limit = 5]) {
+  Future<List<ImageModel>> fetchImages([int startIndex = 0, int limit = 100]) {
     var result = _favorites
         ?.skip(startIndex)
         .take(limit)

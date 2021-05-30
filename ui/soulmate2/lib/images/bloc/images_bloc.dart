@@ -19,12 +19,13 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
   @override
   Stream<Transition<ImagesEvent, ImagesState>> transformEvents(
       Stream<ImagesEvent> events, TransitionFunction<ImagesEvent, ImagesState> transitionFn) {
-    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 500)), transitionFn);
+    return super.transformEvents(events.throttleTime(const Duration(milliseconds: 1000)), transitionFn);
   }
 
   @override
   Stream<ImagesState> mapEventToState(ImagesEvent event) async* {
     if (event is FetchImages) {
+      print('Loading more images');
       yield state.nextVersionWith(status: ImagesStatus.loading);
       yield await _mapPostFetchedToState(state);
     }

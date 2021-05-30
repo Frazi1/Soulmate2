@@ -18,13 +18,37 @@ class VkGroupFeed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => VkGroupPhotosFeedBloc(groupId, VkGroupImagesRepository(context.read<VkAuthBloc>().state as VkAuthSucceededState, groupId))..add(FetchImages()),
-        child: Scaffold(
-          body: CustomImagesList<VkGroupPhotosFeedBloc>(
-              builder: (context, index) => ImageListItem<VkGroupPhotosFeedBloc>(index: index),
-              getItems: (state) => state.images,
-              fetchImages: (bloc) => bloc.add(FetchImages()),
-              getErrorMessage: (state) => null),
-        ));
+      create: (_) => VkGroupPhotosFeedBloc(
+          groupId, VkGroupImagesRepository(context.read<VkAuthBloc>().state as VkAuthSucceededState, groupId))
+        ..add(FetchImages()),
+      child: Scaffold(
+        body: BlocBuilder<VkGroupPhotosFeedBloc, ImagesState>(builder: (context, state) {
+          return NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              final maxScroll = notification.metrics.maxScrollExtent;
+              final currentScroll = notification.metrics.extentBefore;
+
+              if (currentScroll > maxScroll * 0.8) {
+                context.read<VkGroupPhotosFeedBloc>().add(FetchImages());
+              }
+
+              return false;
+            },
+            child: Scrollbar(
+              child: CustomScrollView(slivers: [
+                SliverAppBar(
+                  floating: true,
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (context, index) => ImageListItem<VkGroupPhotosFeedBloc>(index: index),
+                      childCount: state.images.length),
+                ),
+              ]),
+            ),
+          );
+        }),
+      ),
+    );
   }
 }
