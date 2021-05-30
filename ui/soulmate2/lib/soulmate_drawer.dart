@@ -9,13 +9,11 @@ class SoulmateDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
-        padding: EdgeInsets.zero,
+        padding: EdgeInsets.only(top: 36),
         children: [
-          DrawerHeader(child: Text("Soulmate")),
           ListTile(
             title: Row(
               children: [
-                Icon(Icons.favorite),
                 const Text('Favorites'),
               ],
             ),
