@@ -13,7 +13,8 @@ import 'package:soulmate2/images/view/images_list_item.dart';
 class FavoritesImagesBloc extends ImagesBloc {
   late final StreamSubscription _likesSub;
 
-  FavoritesImagesBloc(FavoriteImagesRepository imagesRepository, LikesBloc likesBloc) : super(imagesRepository) {
+  FavoritesImagesBloc(FavoriteImagesRepository imagesRepository, LikesBloc likesBloc)
+      : super(imagesRepository, reverseList: true) {
     _likesSub = likesBloc.stream.listen((state) {
       if (state is FavoritesLoadedState) {
         add(FetchImages());
@@ -40,12 +41,12 @@ class FavoritesList extends StatelessWidget {
             return FavoritesImagesBloc(FavoriteImagesRepository(likesBloc), likesBloc)..add(FetchImages());
           }),
         ],
-        child: BlocConsumer<FavoritesImagesBloc, ImagesState>(
-          builder: (context, state) {
-            var items = state.images;
+        child: Scrollbar(
+          child: BlocConsumer<FavoritesImagesBloc, ImagesState>(
+            builder: (context, state) {
+              var items = state.images;
 
-            return Scrollbar(
-              child: CustomScrollView(slivers: [
+              return CustomScrollView(slivers: [
                 SliverAppBar(
                   floating: true,
                   title: Align(
@@ -73,28 +74,30 @@ class FavoritesList extends StatelessWidget {
                       ? SliverChildListDelegate(
                           [
                             Container(
-                                margin: EdgeInsets.all(24),
-                                child: Center(
-                                  child: Text('No items'),
-                                )),
+                              margin: EdgeInsets.all(24),
+                              child: Center(
+                                child: state.status == ImagesStatus.loading
+                                    ? CircularProgressIndicator()
+                                    : Text('No items'),
+                              ),
+                            ),
                           ],
                         )
-                      : SliverChildBuilderDelegate((context, index) {
-                          return ImageListItem<FavoritesImagesBloc>(
-                            index: index,
-                          );
-                        }, childCount: items.length),
+                      : SliverChildBuilderDelegate(
+                          (context, index) => ImageListItem<FavoritesImagesBloc>(index: index),
+                          childCount: items.length,
+                        ),
                 )
-              ]),
-            );
-          },
-          listener: (context, state) {
-            if (state.status == ImagesStatus.failure) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(content: Text("Could not load")));
-            }
-          },
+              ]);
+            },
+            listener: (context, state) {
+              if (state.status == ImagesStatus.failure) {
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text("Could not load")));
+              }
+            },
+          ),
         ),
       ),
     );

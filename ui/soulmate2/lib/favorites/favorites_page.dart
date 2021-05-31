@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:soulmate2/auth/firebase/auth_page.dart';
 import 'package:soulmate2/auth/firebase/firebase_auth_bloc.dart';
-import 'package:soulmate2/images/likes/view/favorites_page.dart';
+import 'package:soulmate2/images/likes/view/favorites_list.dart';
 import 'package:soulmate2/soulmate_drawer.dart';
 
 class FavoritesPage extends StatelessWidget {

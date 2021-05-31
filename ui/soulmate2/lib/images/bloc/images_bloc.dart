@@ -13,13 +13,20 @@ part 'images_state.dart';
 
 class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
   final ImagesRepository _imagesRepository;
+  final bool reverseList;
 
-  ImagesBloc(this._imagesRepository) : super(const ImagesState());
+  ImagesBloc(this._imagesRepository, {this.reverseList = false}) : super(const ImagesState());
+
+  @override
+  void onChange(Change<ImagesState> change) {
+    print('Images bloc: changing to ${change.nextState}');
+    super.onChange(change);
+  }
 
   @override
   Stream<Transition<ImagesEvent, ImagesState>> transformEvents(
       Stream<ImagesEvent> events, TransitionFunction<ImagesEvent, ImagesState> transitionFn) {
-    return super.transformEvents(events.throttleTime(const Duration(milliseconds: 1000)), transitionFn);
+    return super.transformEvents(events.throttleTime(const Duration(milliseconds: 1500)), transitionFn);
   }
 
   @override
@@ -43,13 +50,20 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
         );
       }
       final images = await _imagesRepository.fetchImages(state.images.length);
-      return images.isEmpty
-          ? state.nextVersionWith(hasReachedMax: true)
-          : state.nextVersionWith(
-              status: ImagesStatus.success,
-              images: List.of(state.images)..addAll(images),
-              hasReachedMax: false,
-            );
+      if (images.isEmpty) {
+        return state.nextVersionWith(status: ImagesStatus.success, hasReachedMax: true);
+      }
+      var list;
+      if (reverseList) {
+        list = List.of(images.reversed)..addAll(state.images);
+      } else {
+       list = List.of(state.images)..addAll(images);
+      }
+      return state.nextVersionWith(
+        status: ImagesStatus.success,
+        images: list,
+        hasReachedMax: false,
+      );
     } catch (e) {
       print(e);
       return state.nextVersionWith(status: ImagesStatus.failure);

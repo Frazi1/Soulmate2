@@ -27,7 +27,7 @@ class VkGroupFeed extends StatelessWidget {
               final maxScroll = notification.metrics.maxScrollExtent;
               final currentScroll = notification.metrics.extentBefore;
 
-              if (currentScroll > maxScroll * 0.8) {
+              if (currentScroll > maxScroll * 0.9) {
                 context.read<VkGroupPhotosFeedBloc>().add(FetchImages());
               }
 
