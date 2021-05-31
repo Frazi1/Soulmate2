@@ -74,6 +74,6 @@ class VkAuthBloc extends HydratedBloc<VkAuthEvent, VkAuthState> {
         'avaUrl': state.avaUrl
       };
     }
-    return null;
+    return {};
   }
 }
