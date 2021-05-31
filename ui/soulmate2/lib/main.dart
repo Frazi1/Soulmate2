@@ -6,6 +6,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:soulmate2/images/likes/favorites_repository.dart';
+import 'package:soulmate2/splash/on_boarding_cubit.dart';
+import 'package:soulmate2/splash/splash_page.dart';
 import 'auth/firebase/firebase_auth_bloc.dart';
 import 'auth/vk/auth/bloc/vk_auth_bloc.dart';
 import 'favorites/favorites_page.dart';
@@ -37,6 +39,7 @@ void main() async {
   runApp(RepositoryProvider(
     create: (context) => FavoritesRepository(database),
     child: MultiBlocProvider(providers: [
+      BlocProvider(create: (_) => OnBoardingCubit()),
       BlocProvider(create: (context) {
         return LikesBloc(RepositoryProvider.of<FavoritesRepository>(context))..add(LoadFavoritesEvent());
       }),
@@ -63,7 +66,7 @@ class App extends StatelessWidget {
             if (snapshot.hasError) {
               return Text('Error loading Firebase:${snapshot.error}');
             } else if (snapshot.hasData) {
-              return FavoritesPage();
+              return OnBoardingPage();
             } else {
               return CircularProgressIndicator();
             }

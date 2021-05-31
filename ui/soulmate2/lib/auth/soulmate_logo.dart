@@ -7,7 +7,7 @@ class SoulmateLogo extends StatelessWidget {
       'Soulmate',
       style: TextStyle(
         color: Theme.of(context).primaryColor,
-        fontSize: 40,
+        fontSize: 56,
         fontWeight: FontWeight.w500,
       ),
     );
