@@ -17,7 +17,7 @@ class ImageListItem<TImagesBloc extends ImagesBloc> extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TImagesBloc, ImagesState>(
       builder: (context, state) {
-        final currentImage = state.images[index];
+        final currentImage = state.images.list[index];
         return Stack(
           children: <Widget>[
             Container(

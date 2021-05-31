@@ -14,7 +14,7 @@ class VkGroupImagesRepository extends ImagesRepository {
   Future<void> close() => Future.value(null);
 
   @override
-  Future<List<ImageModel>> fetchImages([int startIndex = 0, int limit = 5]) async {
+  Future<ImageRequestResult> fetchImages([int startIndex = 0, int limit = 100]) async {
     var ownerId = '-$groupId';
     var response = await VkApiHelper.invokeApi(
         'wall.get?access_token=${authState.accessToken}&owner_id=$ownerId&offset=$startIndex&limit=$limit&v=5.131');
@@ -31,11 +31,12 @@ class VkGroupImagesRepository extends ImagesRepository {
         .where((element) => element['type'] == 'photo')
         .map((e) => e['photo']).toList();
 
-    return photoAtthachments.map((e) =>
+    var list = photoAtthachments.map((e) =>
         ImageModel(
             id: (e['id'] as int).toString(),
             sourceType: 'vk',
             url: ((e['sizes'] as List).last as Map)['url'] as String))
         .toList();
+    return ImageRequestResult(list: list, startIndexNext: startIndex + limit);
   }
 }

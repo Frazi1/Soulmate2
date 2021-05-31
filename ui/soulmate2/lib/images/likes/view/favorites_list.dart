@@ -70,7 +70,7 @@ class FavoritesList extends StatelessWidget {
                   ),
                 ),
                 SliverList(
-                  delegate: items.length == 0
+                  delegate: items.list.length == 0
                       ? SliverChildListDelegate(
                           [
                             Container(
@@ -85,7 +85,7 @@ class FavoritesList extends StatelessWidget {
                         )
                       : SliverChildBuilderDelegate(
                           (context, index) => ImageListItem<FavoritesImagesBloc>(index: index),
-                          childCount: items.length,
+                          childCount: items.list.length,
                         ),
                 )
               ]);
