@@ -7,12 +7,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:soulmate2/images/likes/favorites_repository.dart';
 import 'auth/firebase/firebase_auth_bloc.dart';
-import 'auth/vk/auth/bloc/vk_auth_bloc.dart';
 import 'favorites/favorites_page.dart';
 import 'favorites/upload/favorites_upload_cubit.dart';
 import 'images/likes/bloc/likes_bloc.dart';
 import 'on_boarding/on_boarding_cubit.dart';
 import 'on_boarding/on_boarding_page.dart';
+import 'vk/auth/bloc/vk_auth_bloc.dart';
 
 const USE_FIREBASE_EMULATOR = false;
 

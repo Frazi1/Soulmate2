@@ -6,8 +6,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:soulmate2/auth/vk/auth/bloc/vk_auth_bloc.dart';
-import 'package:soulmate2/auth/vk/groups/models/VkGroupModel.dart';
+import 'package:soulmate2/vk/auth/bloc/vk_auth_bloc.dart';
+import 'package:soulmate2/vk/groups/models/VkGroupModel.dart';
 
 part 'vk_groups_event.dart';
 

@@ -1,6 +1,6 @@
-import 'package:soulmate2/auth/vk/auth/bloc/vk_auth_bloc.dart';
 import 'package:soulmate2/images/images_repository.dart';
 import 'package:soulmate2/images/models/image.dart';
+import 'package:soulmate2/vk/auth/bloc/vk_auth_bloc.dart';
 
 import '../../api_helper.dart';
 

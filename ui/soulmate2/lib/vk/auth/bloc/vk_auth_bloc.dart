@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:soulmate2/auth/vk/api_helper.dart';
+
+import '../../api_helper.dart';
 
 part 'vk_auth_event.dart';
 

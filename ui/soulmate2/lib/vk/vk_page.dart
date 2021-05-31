@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:soulmate2/auth/vk/profile/vk_profile_page.dart';
+import 'package:soulmate2/vk/profile/vk_profile_page.dart';
 
 import '../../soulmate_drawer.dart';
 import 'auth/bloc/vk_auth_bloc.dart';

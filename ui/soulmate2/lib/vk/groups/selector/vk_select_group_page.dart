@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:soulmate2/auth/vk/auth/bloc/vk_auth_bloc.dart';
-import 'package:soulmate2/auth/vk/groups/photo_feed/vk_group_feed.dart';
+import 'package:soulmate2/vk/auth/bloc/vk_auth_bloc.dart';
+import 'package:soulmate2/vk/groups/photo_feed/vk_group_feed.dart';
 
 import 'bloc/vk_groups_bloc.dart';
 

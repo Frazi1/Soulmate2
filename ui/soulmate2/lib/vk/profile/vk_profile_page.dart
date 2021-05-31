@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:soulmate2/auth/vk/auth/bloc/vk_auth_bloc.dart';
-import 'package:soulmate2/auth/vk/auth/vk_auth_page.dart';
+import 'package:soulmate2/vk/auth/bloc/vk_auth_bloc.dart';
+import 'package:soulmate2/vk/auth/vk_auth_page.dart';
 
 class VkProfilePage extends StatelessWidget {
   static Route route() => MaterialPageRoute<void>(builder: (_) => VkProfilePage());

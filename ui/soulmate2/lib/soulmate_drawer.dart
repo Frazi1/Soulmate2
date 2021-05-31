@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'auth/vk/vk_page.dart';
+import 'vk/vk_page.dart';
 import 'favorites/favorites_page.dart';
 
 class SoulmateDrawer extends StatelessWidget {
