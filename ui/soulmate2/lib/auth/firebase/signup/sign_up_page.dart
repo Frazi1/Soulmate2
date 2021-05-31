@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:formz/formz.dart';
 import 'package:soulmate2/auth/firebase/firebase_auth_bloc.dart';
 import 'package:soulmate2/auth/firebase/signup/sign_up_bloc.dart';
 import 'package:soulmate2/auth/firebase/signup/sign_up_view.dart';
@@ -19,7 +20,7 @@ class SignUpPage extends StatelessWidget {
           create: (context) => SignUpBloc(context.read<FirebaseAuthBloc>()),
           child: BlocListener<SignUpBloc, SignUpState>(
             listener: (context, state) {
-              if (state is UserLoggedInFirebaseAuthEvent) {
+              if (state.status == FormzStatus.submissionSuccess) {
                 Navigator.of(context).pop();
               }
             },
