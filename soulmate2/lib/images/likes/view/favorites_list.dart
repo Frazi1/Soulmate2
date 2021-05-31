@@ -1,12 +1,9 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:soulmate2/auth/firebase/firebase_auth_bloc.dart';
 import 'package:soulmate2/favorites/upload/favorites_upload_cubit.dart';
-import 'package:soulmate2/images/bloc/images_bloc.dart';
-import 'package:soulmate2/images/images_repository.dart';
 import 'package:soulmate2/images/likes/bloc/favorites_bloc.dart';
 import 'package:soulmate2/images/view/images_list_item.dart';
 
@@ -59,7 +56,7 @@ class FavoritesList extends StatelessWidget {
                 ),
               ),
             ),
-            if (body != null) SliverList(delegate: body)
+            SliverList(delegate: body)
           ]);
         },
       ),

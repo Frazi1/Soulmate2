@@ -23,7 +23,7 @@ class FavoritesChangeNotification {
   final List<ImageModel> added;
   final List<ImageModel> deleted;
 
-  FavoritesChangeNotification({required this.cache, this.added = const [], this.deleted = const[]});
+  FavoritesChangeNotification({required this.cache, this.added = const [], this.deleted = const []});
 }
 
 class FavoritesRepository {
@@ -62,12 +62,8 @@ class FavoritesRepository {
         url: value['url'] as String,
       );
       print('${image.sourceType} favorite added: ${image.url}');
-      if (_cache != null) {
-        _cache.add(image);
-        _controller.add(FavoritesChangeNotification(cache: _cache, added: [image]));
-      } else {
-        print('Favorites cache is not initialized yet!');
-      }
+      _cache.add(image);
+      _controller.add(FavoritesChangeNotification(cache: _cache, added: [image]));
     });
 
     // ignore: cancel_subscriptions
@@ -79,15 +75,12 @@ class FavoritesRepository {
         url: value['url'] as String,
       );
       print('${image.sourceType} favorite url removed: ${image.url}');
-      if (_cache != null) {
-        _cache.remove(image);
-        _controller.add(FavoritesChangeNotification(cache: _cache, deleted: [image]));
-      }
+      _cache.remove(image);
+      _controller.add(FavoritesChangeNotification(cache: _cache, deleted: [image]));
     });
 
     _listeners[""] = [addListener, removeListener];
   }
-
 
   Future<void> addFavorite(ImageModel image) async {
     return await _favorites!
