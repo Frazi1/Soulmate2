@@ -18,14 +18,14 @@ class SoulmateDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.of(context).push(FavoritesPage.route());
+              Navigator.of(context).pushAndRemoveUntil(FavoritesPage.route(), (route) => false);
             },
           ),
           ListTile(
             title: const Text('VK'),
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.of(context).push(VkPage.route());
+              Navigator.of(context).pushAndRemoveUntil(VkPage.route(), (route) => false);
             },
           )
         ],

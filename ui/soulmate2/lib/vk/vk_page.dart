@@ -12,29 +12,27 @@ class VkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: SoulmateDrawer(),
-      body: BlocBuilder<VkAuthBloc, VkAuthState>(
-        builder: (context, state) {
-          var isLoggedIn = state is VkAuthSucceededState;
+    return BlocBuilder<VkAuthBloc, VkAuthState>(
+      builder: (context, state) {
+        var isLoggedIn = state is VkAuthSucceededState;
 
-          int length = isLoggedIn ? 2 : 1;
-          var tabs = [Tab(icon: Icon(Icons.account_circle))];
-          var views = <Widget>[VkProfilePage()];
-          if (isLoggedIn) {
-            tabs.insert(0, Tab(icon: Icon(Icons.photo)));
-            views.insert(0, VkSelectGroupList());
-          }
-          return DefaultTabController(
-              length: length,
-              child: Scaffold(
-                appBar: AppBar(title: TabBar(tabs: tabs)),
-                body: TabBarView(
-                  children: views,
-                ),
-              ));
-        },
-      ),
+        int length = isLoggedIn ? 2 : 1;
+        var tabs = [Tab(icon: Icon(Icons.account_circle))];
+        var views = <Widget>[VkProfilePage()];
+        if (isLoggedIn) {
+          tabs.insert(0, Tab(icon: Icon(Icons.photo)));
+          views.insert(0, VkSelectGroupList());
+        }
+        return DefaultTabController(
+            length: length,
+            child: Scaffold(
+              appBar: AppBar(title: TabBar(tabs: tabs)),
+              drawer: SoulmateDrawer(),
+              body: TabBarView(
+                children: views,
+              ),
+            ));
+      },
     );
   }
 }
