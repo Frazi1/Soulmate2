@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:soulmate2/auth/firebase/firebase_auth_bloc.dart';
-import 'package:soulmate2/images/likes/favorites_repository.dart';
+import 'package:soulmate2/favorites/favorites_repository.dart';
 import 'package:soulmate2/images/models/image.dart';
 
 part 'favorites_event.dart';

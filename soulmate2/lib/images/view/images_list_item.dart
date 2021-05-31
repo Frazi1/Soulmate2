@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:soulmate2/images/likes/bloc/favorites_bloc.dart';
+import 'package:soulmate2/favorites/bloc/favorites_bloc.dart';
 import 'package:soulmate2/images/models/image.dart';
 
 class ImageListItem extends StatelessWidget {

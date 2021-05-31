@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:soulmate2/images/likes/favorites_repository.dart';
+import 'package:soulmate2/favorites/favorites_repository.dart';
 import 'package:soulmate2/images/models/image.dart';
 import 'package:uuid/uuid.dart';
 

@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:soulmate2/images/likes/favorites_repository.dart';
+import 'package:soulmate2/favorites/favorites_repository.dart';
 import 'auth/firebase/firebase_auth_bloc.dart';
 import 'favorites/favorites_page.dart';
 import 'favorites/upload/favorites_upload_cubit.dart';
-import 'images/likes/bloc/favorites_bloc.dart';
+import 'favorites/bloc/favorites_bloc.dart';
 import 'on_boarding/on_boarding_cubit.dart';
 import 'on_boarding/on_boarding_page.dart';
 import 'vk/auth/bloc/vk_auth_bloc.dart';
@@ -41,7 +41,7 @@ void main() async {
     child: BlocProvider(
       create: (context) => FirebaseAuthBloc(RepositoryProvider.of<FavoritesRepository>(context)),
       child: MultiBlocProvider(providers: [
-        BlocProvider(create: (_) => OnBoardingCubit()),
+        BlocProvider(create: (context) => OnBoardingCubit(context.read<FirebaseAuthBloc>())),
         BlocProvider(create: (context) {
           return FavoritesBloc(RepositoryProvider.of<FavoritesRepository>(context), context.read<FirebaseAuthBloc>())
             ..add(LoadFavoritesEvent());

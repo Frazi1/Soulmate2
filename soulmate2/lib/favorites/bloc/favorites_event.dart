@@ -1,4 +1,4 @@
-part of 'favorites_bloc.dart';
+part of '../../../favorites/bloc/favorites_bloc.dart';
 
 abstract class FavoritesEvent extends Equatable {
   @override
