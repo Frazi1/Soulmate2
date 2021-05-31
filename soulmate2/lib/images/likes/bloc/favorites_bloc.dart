@@ -3,23 +3,31 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:soulmate2/auth/firebase/firebase_auth_bloc.dart';
 import 'package:soulmate2/images/likes/favorites_repository.dart';
 import 'package:soulmate2/images/models/image.dart';
 
-part 'likes_event.dart';
+part 'favorites_event.dart';
 
-part 'likes_state.dart';
+part 'favorites_state.dart';
 
 class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   final FavoritesRepository _repository;
+  final FirebaseAuthBloc _authBloc;
 
   late final StreamSubscription _favoritesSub;
+  late final StreamSubscription _authSub;
 
-  FavoritesBloc(this._repository) : super(FavoritesLoadingState()) {
+  FavoritesBloc(this._repository, this._authBloc) : super(FavoritesLoadingState()) {
     _favoritesSub = _repository.favorites.listen((update) {
       final isDeleted = update.deleted.isNotEmpty;
       final image = isDeleted?update.deleted.first : update.added.first;
       add(FavoritesUpdatedEvent(image: image, isDeleted: isDeleted, cache: update.cache));
+    });
+    _authSub = _authBloc.stream.listen((authState) {
+      if(authState is FirebaseAuthInitial && state is FavoritesLoadedState){
+        add(LoadFavoritesEvent());
+      }
     });
   }
 
@@ -47,7 +55,8 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   Stream<FavoritesState> mapEventToState(FavoritesEvent event) async* {
     print('Processing event: $event');
     if (event is LoadFavoritesEvent) {
-      await _repository.loadFavorites();
+      final cache = await _repository.loadFavorites();
+      yield FavoritesLoadedState(favorites: List.of(cache.images), cache: cache);
     } else if (event is ToggleFavoriteEvent) {
       if (event.liked) {
         try {

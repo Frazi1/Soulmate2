@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:soulmate2/images/likes/bloc/likes_bloc.dart';
+import 'package:soulmate2/images/likes/bloc/favorites_bloc.dart';
 import 'package:soulmate2/images/models/image.dart';
 
 class ImageRequestResult{

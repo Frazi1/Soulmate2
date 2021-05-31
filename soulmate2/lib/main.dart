@@ -9,7 +9,7 @@ import 'package:soulmate2/images/likes/favorites_repository.dart';
 import 'auth/firebase/firebase_auth_bloc.dart';
 import 'favorites/favorites_page.dart';
 import 'favorites/upload/favorites_upload_cubit.dart';
-import 'images/likes/bloc/likes_bloc.dart';
+import 'images/likes/bloc/favorites_bloc.dart';
 import 'on_boarding/on_boarding_cubit.dart';
 import 'on_boarding/on_boarding_page.dart';
 import 'vk/auth/bloc/vk_auth_bloc.dart';
@@ -27,7 +27,7 @@ void main() async {
   if (USE_FIREBASE_EMULATOR) {
     await FirebaseAuth.instance.useEmulator('http://localhost:9099');
     database = FirebaseDatabase(databaseURL: 'http://10.0.2.2:9000');
-  } else{
+  } else {
     database = FirebaseDatabase();
   }
   database.setPersistenceEnabled(true);
@@ -38,15 +38,18 @@ void main() async {
 
   runApp(RepositoryProvider(
     create: (context) => FavoritesRepository(database),
-    child: MultiBlocProvider(providers: [
-      BlocProvider(create: (_) => OnBoardingCubit()),
-      BlocProvider(create: (context) {
-        return FavoritesBloc(RepositoryProvider.of<FavoritesRepository>(context))..add(LoadFavoritesEvent());
-      }),
-      BlocProvider(create: (_) => VkAuthBloc()),
-      BlocProvider(create: (context) => FirebaseAuthBloc(RepositoryProvider.of<FavoritesRepository>(context))),
-      BlocProvider(create: (context) => FavoritesUploadCubit(RepositoryProvider.of<FavoritesRepository>(context)))
-    ], child: App()),
+    child: BlocProvider(
+      create: (context) => FirebaseAuthBloc(RepositoryProvider.of<FavoritesRepository>(context)),
+      child: MultiBlocProvider(providers: [
+        BlocProvider(create: (_) => OnBoardingCubit()),
+        BlocProvider(create: (context) {
+          return FavoritesBloc(RepositoryProvider.of<FavoritesRepository>(context), context.read<FirebaseAuthBloc>())
+            ..add(LoadFavoritesEvent());
+        }),
+        BlocProvider(create: (_) => VkAuthBloc()),
+        BlocProvider(create: (context) => FavoritesUploadCubit(RepositoryProvider.of<FavoritesRepository>(context)))
+      ], child: App()),
+    ),
   ));
 }
 
@@ -66,7 +69,10 @@ class App extends StatelessWidget {
             if (snapshot.hasError) {
               return Text('Error loading Firebase:${snapshot.error}');
             } else if (snapshot.hasData) {
-              return context.read<OnBoardingCubit>().state.isCompleted ? FavoritesPage() : OnBoardingPage();
+              return context
+                  .read<OnBoardingCubit>()
+                  .state
+                  .isCompleted ? FavoritesPage() : OnBoardingPage();
             } else {
               return CircularProgressIndicator();
             }

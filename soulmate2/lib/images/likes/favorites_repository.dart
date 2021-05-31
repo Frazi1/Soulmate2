@@ -107,12 +107,12 @@ class FavoritesRepository {
         onTimeout: () => print('$_operationTimeout timeout expired when removing favorite'));
   }
 
-  Future<void> loadFavorites() async {
-    await _favorites!
+  Future<FavoritesCache> loadFavorites() async {
+    return await _favorites!
         .orderByPriority()
         .once()
         .timeout(_operationTimeout)
-        // .then((value) => _cache = FavoritesCache(_buildImageModelsFromStorageModel(value)))
+        .then((value) => _cache = FavoritesCache(_buildImageModelsFromStorageModel(value)))
         // .then((value) => _controller.add(_cache!))
         // .then((_) => print('Favorites cache initialized!'))
         .catchError((e) => print('Error loading favorites: $e'));
