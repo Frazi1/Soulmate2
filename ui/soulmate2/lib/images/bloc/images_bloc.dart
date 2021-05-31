@@ -32,7 +32,7 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
   }
 
   Future<ImagesState> _mapPostFetchedToState(ImagesState state) async {
-    if (state.hasReachedMax) return state;
+    // if (state.hasReachedMax) return state;
     try {
       if (state.status == ImagesStatus.initial) {
         final images = await _imagesRepository.fetchImages();
