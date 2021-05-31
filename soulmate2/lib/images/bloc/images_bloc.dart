@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:soulmate2/images/images_repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:soulmate2/images/models/image.dart';
+
+import '../images_repository.dart';
 
 part 'images_event.dart';
 
@@ -53,12 +54,7 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
       if (images.list.isEmpty) {
         return state.nextVersionWith(status: ImagesStatus.success, hasReachedMax: true);
       }
-      List<ImageModel> list;
-      if (reverseList) {
-        list = List.of(images.list.reversed)..addAll(state.images.list);
-      } else {
-        list = List.of(state.images.list)..addAll(images.list);
-      }
+      List<ImageModel> list = List.of(state.images.list)..addAll(images.list);
       return state.nextVersionWith(
         status: ImagesStatus.success,
         images: ImageRequestResult(list: list, startIndexNext: images.startIndexNext),

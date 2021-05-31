@@ -19,10 +19,12 @@ class ToggleFavoriteEvent extends FavoritesEvent {
 }
 
 class FavoritesUpdatedEvent extends FavoritesEvent {
-  final FavoritesCache favorites;
+  final ImageModel image;
+  final bool isDeleted;
+  final FavoritesCache cache;
 
-  FavoritesUpdatedEvent({required this.favorites});
+  FavoritesUpdatedEvent({required this.image, required this.isDeleted, required this.cache});
 
   @override
-  List<Object> get props => [favorites];
+  List<Object> get props => [image, isDeleted];
 }

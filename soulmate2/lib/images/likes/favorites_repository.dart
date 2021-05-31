@@ -18,6 +18,14 @@ class FavoritesCache {
   bool add(ImageModel image) => _cache.add(image);
 }
 
+class FavoritesChangeNotification {
+  final FavoritesCache cache;
+  final List<ImageModel> added;
+  final List<ImageModel> deleted;
+
+  FavoritesChangeNotification({required this.cache, this.added = const [], this.deleted = const[]});
+}
+
 class FavoritesRepository {
   static const String LOCAL_FAVORITES = 'local-favorites';
 
@@ -26,16 +34,18 @@ class FavoritesRepository {
   final FirebaseDatabase _database;
 
   DatabaseReference? _favorites;
-  FavoritesCache? _cache;
+  FavoritesCache _cache = FavoritesCache(Set.of([]));
 
   Duration get _operationTimeout => Duration(milliseconds: 30);
 
-  final StreamController<FavoritesCache> _controller = StreamController();
+  final StreamController<FavoritesChangeNotification> _controller = StreamController.broadcast();
   final Map<String, List<StreamSubscription>> _listeners = {};
 
   FavoritesRepository(this._database) {
     setFavorites();
   }
+
+  Stream<FavoritesChangeNotification> get favorites => _controller.stream;
 
   void _clearListeners() {
     _listeners.forEach((key, value) => value.forEach((x) => x.cancel()));
@@ -53,8 +63,10 @@ class FavoritesRepository {
       );
       print('${image.sourceType} favorite added: ${image.url}');
       if (_cache != null) {
-        _cache!.add(image);
-        _controller.add(_cache!);
+        _cache.add(image);
+        _controller.add(FavoritesChangeNotification(cache: _cache, added: [image]));
+      } else {
+        print('Favorites cache is not initialized yet!');
       }
     });
 
@@ -68,15 +80,14 @@ class FavoritesRepository {
       );
       print('${image.sourceType} favorite url removed: ${image.url}');
       if (_cache != null) {
-        _cache!.remove(image);
-        _controller.add(_cache!);
+        _cache.remove(image);
+        _controller.add(FavoritesChangeNotification(cache: _cache, deleted: [image]));
       }
     });
 
     _listeners[""] = [addListener, removeListener];
   }
 
-  Stream<FavoritesCache> get favorites => _controller.stream;
 
   Future<void> addFavorite(ImageModel image) async {
     return await _favorites!
@@ -97,12 +108,13 @@ class FavoritesRepository {
   }
 
   Future<void> loadFavorites() async {
-    return await _favorites!
+    await _favorites!
         .orderByPriority()
         .once()
         .timeout(_operationTimeout)
-        .then((value) => _cache = FavoritesCache(_buildImageModelsFromStorageModel(value)))
-        .then((value) => _controller.add(_cache!))
+        // .then((value) => _cache = FavoritesCache(_buildImageModelsFromStorageModel(value)))
+        // .then((value) => _controller.add(_cache!))
+        // .then((_) => print('Favorites cache initialized!'))
         .catchError((e) => print('Error loading favorites: $e'));
   }
 

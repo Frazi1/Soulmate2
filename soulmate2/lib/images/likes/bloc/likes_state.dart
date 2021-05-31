@@ -8,27 +8,20 @@ abstract class FavoritesState extends Equatable {
 class FavoritesLoadingState extends FavoritesState {}
 
 class FavoritesLoadedState extends FavoritesState {
-  final FavoritesCache favorites;
+  final List<ImageModel> favorites;
+  final FavoritesCache cache;
   final int version;
 
   FavoritesLoadedState({
     required this.favorites,
+    required this.cache,
     this.version = 1
   });
 
   @override
   List<Object> get props => [favorites, version];
 
-  FavoritesLoadedState copyWith({required FavoritesCache favorites}){
-    return FavoritesLoadedState(favorites: favorites, version: this.version + 1);
+  FavoritesLoadedState copyWith({required List<ImageModel> favorites}){
+    return FavoritesLoadedState(favorites: favorites, cache: this.cache, version: this.version + 1);
   }
-}
-
-class FavoriteDeletingState extends FavoritesState {
-  final ImageModel image;
-
-  FavoriteDeletingState(this.image);
-
-  @override
-  List<Object> get props => [image];
 }

@@ -41,11 +41,11 @@ void main() async {
     child: MultiBlocProvider(providers: [
       BlocProvider(create: (_) => OnBoardingCubit()),
       BlocProvider(create: (context) {
-        return LikesBloc(RepositoryProvider.of<FavoritesRepository>(context))..add(LoadFavoritesEvent());
+        return FavoritesBloc(RepositoryProvider.of<FavoritesRepository>(context))..add(LoadFavoritesEvent());
       }),
       BlocProvider(create: (_) => VkAuthBloc()),
       BlocProvider(create: (context) => FirebaseAuthBloc(RepositoryProvider.of<FavoritesRepository>(context))),
-      BlocProvider(create: (context) => FavoritesUploadCubit(context.read<LikesBloc>()))
+      BlocProvider(create: (context) => FavoritesUploadCubit(RepositoryProvider.of<FavoritesRepository>(context)))
     ], child: App()),
   ));
 }

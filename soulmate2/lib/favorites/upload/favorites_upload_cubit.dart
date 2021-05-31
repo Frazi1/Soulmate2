@@ -5,22 +5,20 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:soulmate2/images/likes/bloc/likes_bloc.dart';
+import 'package:soulmate2/images/likes/favorites_repository.dart';
 import 'package:soulmate2/images/models/image.dart';
 import 'package:uuid/uuid.dart';
 
 part 'favorites_upload_state.dart';
 
 class FavoritesUploadCubit extends Cubit<FavoritesUploadState> {
-  final LikesBloc _likesBloc;
+  final FavoritesRepository _repository;
 
   late final StreamSubscription _likesSub;
 
-  FavoritesUploadCubit(this._likesBloc) : super(FavoritesUploadInitial()) {
-    _likesSub = _likesBloc.stream.listen((state) async {
-      if (state is FavoriteDeletingState && state.image.sourceType == 'custom') {
-        await deleteImage(state.image);
-      }
+  FavoritesUploadCubit(this._repository) : super(FavoritesUploadInitial()) {
+    _likesSub = _repository.favorites.listen((update) async {
+      update.deleted.where((x) => x.sourceType == 'custom').forEach((x) async => await deleteImage(x));
     });
   }
 
@@ -38,7 +36,7 @@ class FavoritesUploadCubit extends Cubit<FavoritesUploadState> {
     final url = await newFileRef.getDownloadURL();
 
     final image = ImageModel(id: imageId, sourceType: 'custom', url: url);
-    _likesBloc.add(ToggleFavoriteEvent(image, true));
+    await _repository.addFavorite(image);
   }
 
   Future<void> deleteImage(ImageModel image) async {

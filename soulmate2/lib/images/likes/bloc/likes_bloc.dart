@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:soulmate2/images/likes/favorites_repository.dart';
 import 'package:soulmate2/images/models/image.dart';
@@ -9,14 +10,16 @@ part 'likes_event.dart';
 
 part 'likes_state.dart';
 
-class LikesBloc extends Bloc<FavoritesEvent, FavoritesState> {
+class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   final FavoritesRepository _repository;
 
   late final StreamSubscription _favoritesSub;
 
-  LikesBloc(this._repository) : super(FavoritesLoadingState()) {
-    _favoritesSub = _repository.favorites.listen((favoritesSet) {
-      add(FavoritesUpdatedEvent(favorites: favoritesSet));
+  FavoritesBloc(this._repository) : super(FavoritesLoadingState()) {
+    _favoritesSub = _repository.favorites.listen((update) {
+      final isDeleted = update.deleted.isNotEmpty;
+      final image = isDeleted?update.deleted.first : update.added.first;
+      add(FavoritesUpdatedEvent(image: image, isDeleted: isDeleted, cache: update.cache));
     });
   }
 
@@ -53,14 +56,21 @@ class LikesBloc extends Bloc<FavoritesEvent, FavoritesState> {
           print(e);
         }
       } else {
-        yield FavoriteDeletingState(event.image);
         await _repository.removeFavorite(event.image);
       }
     } else if (event is FavoritesUpdatedEvent) {
       if (state is FavoritesLoadedState) {
-        yield (state as FavoritesLoadedState).copyWith(favorites: event.favorites);
+        var loadedState = (state as FavoritesLoadedState);
+        if(event.isDeleted){
+          loadedState.favorites.remove(event.image);
+        } else {
+          loadedState.favorites.add(event.image);
+        }
+        yield loadedState.copyWith(favorites: loadedState.favorites);
       } else {
-        yield FavoritesLoadedState(favorites: event.favorites);
+        if(!event.isDeleted) {
+          yield FavoritesLoadedState(favorites: [event.image], cache: event.cache);
+        }
       }
     }
   }

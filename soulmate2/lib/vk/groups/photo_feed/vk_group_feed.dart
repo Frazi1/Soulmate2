@@ -40,7 +40,7 @@ class VkGroupFeed extends StatelessWidget {
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
-                      (context, index) => ImageListItem<VkGroupPhotosFeedBloc>(index: index),
+                      (context, index) => ImageListItem(index: index, list: state.images.list),
                       childCount: state.images.list.length),
                 ),
               ]),
