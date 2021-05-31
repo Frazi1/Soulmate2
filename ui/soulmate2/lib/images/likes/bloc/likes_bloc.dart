@@ -22,19 +22,22 @@ class LikesBloc extends Bloc<FavoritesEvent, FavoritesState> {
 
   @override
   void onEvent(FavoritesEvent event) {
-    print('Likes_bloc: got event: ${event}');
+    print('Likes_bloc: got event: $event');
+    super.onEvent(event);
   }
 
 
   @override
   void onError(Object error, StackTrace stackTrace) {
     print('Likes bloc: error $error');
+    super.onError(error, stackTrace);
   }
 
 
   @override
   void onChange(Change<FavoritesState> change) {
     print('Likes bloc: changed to state ${change.nextState}');
+    super.onChange(change);
   }
 
   @override

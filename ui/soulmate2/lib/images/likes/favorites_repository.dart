@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:soulmate2/images/models/image.dart';
 
 class FavoritesCache {
@@ -46,6 +44,7 @@ class FavoritesRepository {
   }
 
   void _createListeners() {
+    // ignore: cancel_subscriptions
     final addListener = _favorites!.onChildAdded.listen((event) {
       final value = event.snapshot.value;
       final image = ImageModel(
@@ -60,6 +59,7 @@ class FavoritesRepository {
       }
     });
 
+    // ignore: cancel_subscriptions
     final removeListener = _favorites!.onChildRemoved.listen((event) {
       final value = event.snapshot.value;
       final image = ImageModel(
