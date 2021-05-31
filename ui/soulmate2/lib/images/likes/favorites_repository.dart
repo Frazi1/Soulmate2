@@ -25,11 +25,10 @@ class FavoritesRepository {
 
   final FirebaseDatabase _database;
 
-  bool _isOnlineMode = false;
   DatabaseReference? _favorites;
   FavoritesCache? _cache;
 
-  Duration get _operationTimeout => _isOnlineMode ? Duration(seconds: 3) : Duration(milliseconds: 30);
+  Duration get _operationTimeout => Duration(milliseconds: 30);
 
   final StreamController<FavoritesCache> _controller = StreamController();
   final Map<String, List<StreamSubscription>> _listeners = {};
@@ -148,7 +147,6 @@ class FavoritesRepository {
     final user = FirebaseAuth.instance.currentUser;
     final favoritesPath = user == null ? LOCAL_FAVORITES : _createUserFavorites(user.uid);
 
-    _isOnlineMode = user != null;
     _favorites = _database.reference().child(favoritesPath);
     _clearListeners();
     _createListeners();
