@@ -7,5 +7,5 @@ class OnBoardingState extends Equatable {
   OnBoardingState({this.isCompleted = false});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [isCompleted];
 }

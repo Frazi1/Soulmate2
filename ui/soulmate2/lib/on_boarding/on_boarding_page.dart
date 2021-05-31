@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:soulmate2/auth/soulmate_logo.dart';
 import 'package:soulmate2/favorites/favorites_page.dart';
-import 'package:soulmate2/splash/on_boarding_cubit.dart';
+
+import 'on_boarding_cubit.dart';
 
 class OnBoardingPage extends StatelessWidget {
   static Route route() => MaterialPageRoute<void>(builder: (_) => OnBoardingPage());
@@ -34,7 +35,7 @@ class OnBoardingPage extends StatelessWidget {
                       children: [
                         CachedNetworkImage(
                             imageUrl:
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/VK.com-logo.svg/480px-VK.com-logo.svg.png",
+                            "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/VK.com-logo.svg/480px-VK.com-logo.svg.png",
                             width: 40),
                       ],
                     ),
