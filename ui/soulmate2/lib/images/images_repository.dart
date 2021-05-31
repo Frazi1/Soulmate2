@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:soulmate2/images/likes/bloc/likes_bloc.dart';
 import 'package:soulmate2/images/models/image.dart';
@@ -22,7 +21,7 @@ class FavoriteImagesRepository extends ImagesRepository {
   }
 
   void updateFavorites(FavoritesState state) {
-    if(state is FavoritesLoadedState){
+    if (state is FavoritesLoadedState) {
       _favorites = state.favorites.images.toList();
     }
   }
