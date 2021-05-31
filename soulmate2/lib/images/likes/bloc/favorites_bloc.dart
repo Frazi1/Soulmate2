@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:soulmate2/auth/firebase/firebase_auth_bloc.dart';
 import 'package:soulmate2/images/likes/favorites_repository.dart';
@@ -87,6 +86,7 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   @override
   Future<void> close() async {
     await _favoritesSub.cancel();
+    await _authSub.cancel();
     return super.close();
   }
 }
