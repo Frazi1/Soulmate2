@@ -3,9 +3,6 @@ import 'dart:convert';
 
 import 'package:soulmate2/images/likes/bloc/likes_bloc.dart';
 import 'package:soulmate2/images/models/image.dart';
-import 'package:http/http.dart' as http;
-
-import 'likes/favorites_repository.dart';
 
 abstract class ImagesRepository {
   Future<List<ImageModel>> fetchImages([int startIndex = 0, int limit = 100]);

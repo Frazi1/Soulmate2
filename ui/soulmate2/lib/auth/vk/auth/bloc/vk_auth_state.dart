@@ -19,8 +19,11 @@ class VkAuthRejectedState extends VkAuthState {
 class VkAuthSucceededState extends VkAuthState {
   final String accessToken;
   final String userId;
+  final String displayName;
+  final String? avaUrl;
 
-  VkAuthSucceededState(this.accessToken, this.userId);
+  VkAuthSucceededState(
+      {required this.accessToken, required this.userId, required this.displayName, required this.avaUrl});
 
   @override
   List<Object> get props => [accessToken, userId];

@@ -22,8 +22,8 @@ class VkPage extends StatelessWidget {
           var tabs = [Tab(icon: Icon(Icons.account_circle))];
           var views = <Widget>[VkProfilePage()];
           if (isLoggedIn) {
-            tabs.add(Tab(icon: Icon(Icons.photo)));
-            views.add(VkSelectGroupList());
+            tabs.insert(0, Tab(icon: Icon(Icons.photo)));
+            views.insert(0, VkSelectGroupList());
           }
           return DefaultTabController(
               length: length,

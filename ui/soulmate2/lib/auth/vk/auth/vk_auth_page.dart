@@ -22,12 +22,7 @@ class VkAuthPage extends StatelessWidget {
         builder: (context, state) {
           return WebView(
             initialUrl: url,
-            onPageStarted: (url) {
-              context.read<VkAuthBloc>().add(VkAuthRedirectEvent(url));
-            },
-            onPageFinished: (link) {
-              // context.read<VkAuthBloc>().add(VkAuthRedirectEvent(link));
-            },
+            onPageStarted: (url) => context.read<VkAuthBloc>().add(VkAuthRedirectEvent(url)),
           );
         },
       );
