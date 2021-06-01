@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:soulmate2/favorites/bloc/favorites_bloc.dart';
 import 'package:soulmate2/images/models/image.dart';
 
@@ -16,9 +18,15 @@ class ImageListItem extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Container(
-          child: CachedNetworkImage(
-            imageUrl: currentImage.url,
-            errorWidget: (context, url, error) => Container(),
+          child: GestureDetector(
+            child: CachedNetworkImage(
+              imageUrl: currentImage.url,
+              errorWidget: (context, url, error) => Container(),
+            ),
+            onLongPress: () async {
+              var file = await DefaultCacheManager().getSingleFile(currentImage.url);
+              Share.shareFiles([file.path]);
+            },
           ),
         ),
         Positioned(
@@ -32,7 +40,7 @@ class ImageListItem extends StatelessWidget {
                   onTap: () {
                     var bloc = context.read<FavoritesBloc>();
                     bloc.add(ToggleFavoriteEvent(currentImage, !liked));
-                  },
+                  }
                 );
               },
             )),
